@@ -1,4 +1,4 @@
-package com.fsoteam.ml.decisiontreeimpl.ui;
+package com.fsoteam.ml.decisiontreeimpl;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

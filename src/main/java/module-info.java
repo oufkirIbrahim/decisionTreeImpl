@@ -10,8 +10,8 @@ module com.fsoteam.ml.decisiontreeimpl {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
 
-    opens com.fsoteam.ml.decisiontreeimpl to javafx.fxml;
     exports com.fsoteam.ml.decisiontreeimpl;
+    opens com.fsoteam.ml.decisiontreeimpl to javafx.fxml;
     exports com.fsoteam.ml.decisiontreeimpl.ui;
     opens com.fsoteam.ml.decisiontreeimpl.ui to javafx.fxml;
 }
