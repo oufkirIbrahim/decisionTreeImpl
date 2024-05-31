@@ -34,4 +34,8 @@ public class DecisionTreeClass {
     public void setAppearanceCount(int appearanceCount) {
         this.appearanceCount = appearanceCount;
     }
+
+    public void  resetCount() {
+        this.appearanceCount = 0;
+    }
 }

@@ -37,7 +37,7 @@ public class Instance {
         this.attributeValues = attributeValues;
     }
 
-    public String getValeurSeulAttribut(Attribute att) {
+    public String getSingleAttributeValue(Attribute att) {
         for (String attInstance : attributeValues) {
             for (Branch b : att.getBranches()) {
                 if (attInstance.equals(b.getValue())) {
@@ -55,4 +55,5 @@ public class Instance {
     public void setClassLabel(String classLabel) {
         this.classLabel = classLabel;
     }
+
 }
