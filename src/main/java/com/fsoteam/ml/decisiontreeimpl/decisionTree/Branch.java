@@ -83,4 +83,10 @@ public class Branch implements Cloneable {
             throw new AssertionError(); // Can't happen as we implement Cloneable
         }
     }
+
+    public void resetCount(int count){
+        this.totalInstanceCount = 0;
+        this.instanceIds = new int[0];
+        this.instanceCountsInClasses = new int[count];
+    }
 }
