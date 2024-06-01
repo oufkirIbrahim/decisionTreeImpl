@@ -9,7 +9,8 @@ module com.fsoteam.ml.decisiontreeimpl {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
-
+    requires de.jensd.fx.glyphs.fontawesome;
+    
     exports com.fsoteam.ml.decisiontreeimpl;
     opens com.fsoteam.ml.decisiontreeimpl to javafx.fxml;
     exports com.fsoteam.ml.decisiontreeimpl.ui;

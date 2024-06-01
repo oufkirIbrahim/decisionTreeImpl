@@ -1,16 +1,67 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
-
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.fsoteam.ml.decisiontreeimpl.ui.HelloController">
-  <padding>
-    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-  </padding>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-  <Label fx:id="welcomeText"/>
-  <Button text="Hello!" onAction="#onHelloButtonClick"/>
-</VBox>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="601.0" prefWidth="918.0" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fsoteam.ml.decisiontreeimpl.ui.HelloController">
+  <children>
+    <VBox prefHeight="601.0" prefWidth="223.0" style="-fx-background-color: #3f2b63;">
+      <children>
+        <Pane prefHeight="124.0" prefWidth="223.0">
+          <children>
+            <Label layoutX="81.0" layoutY="49.0" text="LOGO" textFill="#fcfcfc">
+              <font>
+                <Font size="21.0" />
+              </font>
+            </Label>
+          </children>
+        </Pane>
+        <Button mnemonicParsing="false" prefHeight="47.0" prefWidth="223.0" style="-fx-label-padding: 5px;" stylesheets="@css/style.css" text=" Upload Data" textAlignment="CENTER" textFill="WHITE" onAction="#handleUploadData">
+          <graphic>
+            <FontAwesomeIconView fill="WHITE" glyphName="UPLOAD" glyphSize="24" style="-fx-translate-x: -15px;" />
+          </graphic>
+          <font>
+            <Font size="16.0" />
+          </font>
+          <cursor>
+            <Cursor fx:constant="DEFAULT" />
+          </cursor>
+        </Button>
+        <Button layoutX="10.0" layoutY="134.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="223.0" stylesheets="@css/style.css" text="Run Test" textFill="WHITE" onAction="#handleRunTest">
+          <graphic>
+            <FontAwesomeIconView fill="WHITE" glyphName="PLAY" glyphSize="24" style="-fx-translate-x: -30px;" />
+          </graphic>
+          <font>
+            <Font size="16.0" />
+          </font>
+        </Button>
+        <Button layoutX="10.0" layoutY="181.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="223.0" stylesheets="@css/style.css" text="Evaluate" textAlignment="CENTER" textFill="WHITE" >
+          <graphic>
+            <FontAwesomeIconView fill="WHITE" glyphName="CHECK" glyphSize="24" style="-fx-translate-x: -30px;" />
+          </graphic>
+          <font>
+            <Font size="16.0" />
+          </font>
+        </Button>
+        <Button layoutX="10.0" layoutY="228.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="223.0" stylesheets="@css/style.css" text="View Data" textAlignment="CENTER" textFill="WHITE" >
+          <graphic>
+            <FontAwesomeIconView fill="WHITE" glyphName="BAR_CHART" glyphSize="24" style="-fx-translate-x: -22px;" />
+          </graphic>
+          <font>
+            <Font size="16.0" />
+          </font>
+        </Button>
+      </children>
+    </VBox>
+    <AnchorPane layoutX="223.0" layoutY="0.0" prefHeight="601.0" prefWidth="695.0">
+      <children>
+        <TableView fx:id="dataTable" layoutX="14.0" layoutY="14.0" prefHeight="573.0" prefWidth="667.0" />
+      </children>
+    </AnchorPane>
+  </children>
+</AnchorPane>
