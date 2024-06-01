@@ -1,5 +1,7 @@
 package com.fsoteam.ml.decisiontreeimpl.evaluation;
 
+import java.util.List;
+
 public class ConfusionMatrix {
 
     private int classCount;
@@ -97,6 +99,20 @@ public class ConfusionMatrix {
         return (this.precision + this.recall) != 0 ? 2 * (this.precision * this.recall) / (this.precision + this.recall) : 0;
     }
 
+    public static ConfusionMatrix aggregateMatrices(List<ConfusionMatrix> matrices, int classCount) {
+        int[][] aggregatedElements = new int[classCount][classCount];
+
+        for (ConfusionMatrix matrix : matrices) {
+            int[][] elements = matrix.getElements();
+            for (int i = 0; i < classCount; i++) {
+                for (int j = 0; j < classCount; j++) {
+                    aggregatedElements[i][j] += elements[i][j];
+                }
+            }
+        }
+
+        return new ConfusionMatrix(aggregatedElements, classCount);
+    }
     // Getters
     public int getClassCount() {
         return classCount;
