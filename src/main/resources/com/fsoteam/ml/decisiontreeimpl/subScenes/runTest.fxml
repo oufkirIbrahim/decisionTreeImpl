@@ -1,19 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.text.Font?>
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.fsoteam.ml.decisiontreeimpl.ui.RunTestController"
-            prefHeight="400.0" prefWidth="600.0">
-    <Label layoutX="81.0" layoutY="49.0" text="Run Test" textFill="#222">
-        <font>
-            <Font size="21.0" />
-        </font>
-    </Label>
+<AnchorPane prefHeight="546.0" prefWidth="856.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fsoteam.ml.decisiontreeimpl.ui.RunTestController">
+    <SplitPane dividerPositions="0.5" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+        <items>
+         <SplitPane dividerPositions="0.32061068702290074, 0.42748091603053434" maxWidth="233" minWidth="233" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+           <items>
+             <AnchorPane maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="160.0">
+                  <children>
+                           <BorderPane prefHeight="200.0" style="-fx-border-color: #ccc; -fx-padding: 5px;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <top>
+                           <Label prefHeight="28.0" prefWidth="315.0" style="-fx-padding: 5px;" text="Test options" BorderPane.alignment="CENTER" />
+                        </top>
+                        <center>
+                           <VBox prefHeight="126.0" prefWidth="221.0" style="-fx-spacing: 15px; -fx-padding: 10px; -fx-border-color: #ccc;" BorderPane.alignment="CENTER">
+                              <children>
+                                 <RadioButton id="testOptions_trainingSet" mnemonicParsing="false" prefHeight="18.0" prefWidth="279.0" selected="true" text="Use training set">
+                                    <toggleGroup>
+                                       <ToggleGroup fx:id="testOptions" />
+                                    </toggleGroup>
+                                 </RadioButton>
+                                 <RadioButton id="testOptions_crossValidation" contentDisplay="RIGHT" mnemonicParsing="false" prefHeight="26.0" prefWidth="284.0" text="Cross-validation" toggleGroup="$testOptions">
+                                    <graphic>
+                                       <TextField alignment="BOTTOM_LEFT" prefHeight="26.0" prefWidth="43.0" promptText="Folds" translateX="30.0" />
+                                    </graphic>
+                                 </RadioButton>
+                                 <RadioButton id="testOptions_percenage" contentDisplay="RIGHT" mnemonicParsing="false" prefHeight="18.0" prefWidth="299.0" text="Percentage split" toggleGroup="$testOptions">
+                                    <graphic>
+                                       <TextField alignment="BOTTOM_LEFT" prefHeight="26.0" prefWidth="43.0" promptText="\%" translateX="30.0" />
+                                    </graphic>
+                                 </RadioButton>
+                              </children></VBox>
+                        </center>
+                     </BorderPane>
+                  </children>
+               </AnchorPane>
+               <AnchorPane maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="50.0" prefWidth="200.0">
+                  <children>
+                     <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 5px; -fx-alignment: center; -fx-border-color: #ccc;" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                        <children>
+                           <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="26.0" prefWidth="83.0" text="Start" />
+                           <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="26.0" prefWidth="92.0" text="Stop" textAlignment="CENTER" />
+                        </children>
+                        <padding>
+                           <Insets bottom="5.0" top="5.0" />
+                        </padding>
+                     </HBox>
+                  </children>
+               </AnchorPane>
+             <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                  <children>
+                           <BorderPane prefHeight="200.0" style="-fx-border-color: #ccc; -fx-padding: 5px;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <top>
+                           <Label prefHeight="28.0" prefWidth="324.0" style="-fx-padding: 5px;" text="Tests History" BorderPane.alignment="CENTER" />
+                        </top>
+                        <center>
+                           <ListView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+                        </center>
+                     </BorderPane>
+                  </children>
+               </AnchorPane>
+           </items>
+         </SplitPane>
+         <AnchorPane prefHeight="200.0" prefWidth="200.0">
+            <children>
+               <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <top>
+                     <Label prefHeight="28.0" prefWidth="397.0" style="-fx-padding: 5px;" text="Classier Output" BorderPane.alignment="CENTER" />
+                  </top>
+                  <center>
+                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="361.0" prefWidth="286.0" BorderPane.alignment="CENTER">
+                        <children>
+                           <ListView layoutX="43.0" layoutY="81.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0" />
+                        </children>
+                     </AnchorPane>
+                  </center>
+               </BorderPane>
+            </children>
+         </AnchorPane>
+        </items>
+    </SplitPane>
 </AnchorPane>
