@@ -1,0 +1,53 @@
+/* General Styles */
+.root {
+    -fx-font-family: 'Arial';
+}
+
+/* VBox Styling */
+.vbox {
+    -fx-padding: 10;
+    -fx-spacing: 10;
+}
+
+/* GridPane Styling */
+.grid-pane {
+    -fx-padding: 10;
+    -fx-hgap: 10;
+    -fx-vgap: 10;
+}
+
+/* TextField Styling */
+.text-field {
+    -fx-pref-height: 24px;
+    -fx-pref-width: 571px;
+    -fx-padding: 5px;
+}
+
+/* Button Styling */
+.button {
+    -fx-background-color: #3f2b63;
+    -fx-text-fill: white;
+    -fx-pref-height: 24px;
+    -fx-pref-width: 155px;
+    -fx-padding: 5px 10px;
+}
+
+.button:hover {
+    -fx-background-color: #5e478d;
+}
+
+/* TableView Styling */
+.table-view {
+    -fx-pref-height: 359px;
+    -fx-pref-width: 474px;
+    -fx-padding: 10;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #f4f4f4;
+}
+
+.table-view .column-header {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}

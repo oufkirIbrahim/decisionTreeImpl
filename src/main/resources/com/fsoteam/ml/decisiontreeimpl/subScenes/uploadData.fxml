@@ -1,19 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.text.Font?>
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.fsoteam.ml.decisiontreeimpl.ui.UploadDataController"
-            prefHeight="400.0" prefWidth="600.0">
-    <Label layoutX="81.0" layoutY="49.0" text="Upload Data" textFill="#222">
-        <font>
-            <Font size="21.0" />
-        </font>
-    </Label>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fsoteam.ml.decisiontreeimpl.ui.UploadDataController">
+    <children>
+        <VBox styleClass="vbox" AnchorPane.bottomAnchor="10" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="10">
+            <children>
+                <GridPane prefHeight="400.0" prefWidth="474.0" styleClass="grid-pane" AnchorPane.bottomAnchor="10" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="10">
+                    <columnConstraints >
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints />
+                    </columnConstraints>
+                    <rowConstraints  >
+                        <RowConstraints maxHeight="192.0" minHeight="10.0" prefHeight="41.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="359.0" minHeight="10.0" prefHeight="359.0" vgrow="ALWAYS" />
+                    </rowConstraints>
+                    <children >
+                        <TextField fx:id="filePathField" prefHeight="24.0" prefWidth="571.0" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <Button fx:id="chooseFileButton" mnemonicParsing="false" prefHeight="24.0" prefWidth="155.0" text="Choose file" GridPane.columnIndex="1" GridPane.rowIndex="0" onAction="#handleChooseFile"/>
+                        <TableView fx:id="dataTable" styleClass="table-view" AnchorPane.bottomAnchor="10" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="10" GridPane.columnSpan="2" GridPane.rowIndex="1" >
+                            <columns>
+
+                            </columns>
+                        </TableView>
+                    </children>
+                </GridPane>
+            </children>
+            <stylesheets>
+                <URL value="@../css/uploadData.css" />
+                <URL value="@../css/style.css" />
+            </stylesheets>
+        </VBox>
+    </children>
 </AnchorPane>

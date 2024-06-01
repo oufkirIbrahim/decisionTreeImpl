@@ -1,7 +1,9 @@
 .button{
     -fx-background-color: #3F2B63;
+    -fx-cursor: hand; /* Add pointer cursor */
 }
 
 .button:hover, .button:pressed{
-    -fx-background-color: #3F2B63;
+    -fx-background-color: #5e478d;
 }
+
