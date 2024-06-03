@@ -13,8 +13,8 @@ import java.util.List;
 
 public class CustomFileReader {
 
-    public List<Instance> dataSet = new ArrayList<>();
-    public List<Attribute> attributs = new ArrayList<>();
+    private List<Instance> dataSet = new ArrayList<>();
+    private List<Attribute> attributs = new ArrayList<>();
 
     public CustomFileReader(String fileName) {
         try {
@@ -51,5 +51,13 @@ public class CustomFileReader {
                 }
             }
         }
+    }
+
+    public List<Instance> getDataSet() {
+        return dataSet;
+    }
+
+    public List<Attribute> getAttributs() {
+        return attributs;
     }
 }

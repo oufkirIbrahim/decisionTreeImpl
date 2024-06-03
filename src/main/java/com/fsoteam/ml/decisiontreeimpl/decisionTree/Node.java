@@ -2,7 +2,7 @@ package com.fsoteam.ml.decisiontreeimpl.decisionTree;
 
 import com.fsoteam.ml.decisiontreeimpl.decisionTree.Attribute;
 
-public class Node {
+public class Node implements Cloneable{
 
     private Attribute attribute;
     private boolean isLeaf;
@@ -33,5 +33,16 @@ public class Node {
 
     public void setMajorClass(String majorClass) {
         this.majorClass = majorClass;
+    }
+
+
+    @Override
+    public Node clone() {
+        try {
+            // TODO: copy mutable state here, so the clone can't change the internals of the original
+            return (Node) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }
