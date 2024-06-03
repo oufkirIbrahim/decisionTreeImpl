@@ -13,6 +13,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.TextArea?>
 <AnchorPane prefHeight="546.0" prefWidth="856.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fsoteam.ml.decisiontreeimpl.ui.RunTestController">
     <SplitPane dividerPositions="0.5" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
         <items>
@@ -27,19 +28,19 @@
                         <center>
                            <VBox prefHeight="126.0" prefWidth="221.0" style="-fx-spacing: 15px; -fx-padding: 10px; -fx-border-color: #ccc;" BorderPane.alignment="CENTER">
                               <children>
-                                 <RadioButton id="testOptions_trainingSet" mnemonicParsing="false" prefHeight="18.0" prefWidth="279.0" selected="true" text="Use training set">
+                                 <RadioButton id="testOptions_trainingSet" fx:id="testOptions_trainingSet" mnemonicParsing="false" prefHeight="18.0" prefWidth="279.0" selected="true" text="Use training set">
                                     <toggleGroup>
                                        <ToggleGroup fx:id="testOptions" />
                                     </toggleGroup>
                                  </RadioButton>
-                                 <RadioButton id="testOptions_crossValidation" contentDisplay="RIGHT" mnemonicParsing="false" prefHeight="26.0" prefWidth="284.0" text="Cross-validation" toggleGroup="$testOptions">
+                                 <RadioButton id="testOptions_crossValidation" fx:id="testOptions_crossValidation" contentDisplay="RIGHT" mnemonicParsing="false" prefHeight="26.0" prefWidth="284.0" text="Cross-validation" toggleGroup="$testOptions">
                                     <graphic>
-                                       <TextField alignment="BOTTOM_LEFT" prefHeight="26.0" prefWidth="43.0" promptText="Folds" translateX="30.0" />
+                                       <TextField fx:id="crossValidationFoldEt" alignment="BOTTOM_LEFT" prefHeight="26.0" prefWidth="43.0" promptText="Folds" translateX="30.0" />
                                     </graphic>
                                  </RadioButton>
-                                 <RadioButton id="testOptions_percenage" contentDisplay="RIGHT" mnemonicParsing="false" prefHeight="18.0" prefWidth="299.0" text="Percentage split" toggleGroup="$testOptions">
+                                 <RadioButton id="testOptions_percenage" fx:id="testOptions_percentageSplit" contentDisplay="RIGHT" mnemonicParsing="false" prefHeight="18.0" prefWidth="299.0" text="Percentage split" toggleGroup="$testOptions">
                                     <graphic>
-                                       <TextField alignment="BOTTOM_LEFT" prefHeight="26.0" prefWidth="43.0" promptText="\%" translateX="30.0" />
+                                       <TextField fx:id="percentageSplitEt" alignment="BOTTOM_LEFT" prefHeight="26.0" prefWidth="43.0" promptText="\%" translateX="30.0" />
                                     </graphic>
                                  </RadioButton>
                               </children></VBox>
@@ -51,8 +52,8 @@
                   <children>
                      <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 5px; -fx-alignment: center; -fx-border-color: #ccc;" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                         <children>
-                           <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="26.0" prefWidth="83.0" text="Start" />
-                           <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="26.0" prefWidth="92.0" text="Stop" textAlignment="CENTER" />
+                           <Button fx:id="startTestButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="26.0" prefWidth="83.0" text="Start" />
+                           <Button fx:id="stopTestButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="26.0" prefWidth="92.0" text="Stop" textAlignment="CENTER" />
                         </children>
                         <padding>
                            <Insets bottom="5.0" top="5.0" />
@@ -67,7 +68,7 @@
                            <Label prefHeight="28.0" prefWidth="324.0" style="-fx-padding: 5px;" text="Tests History" BorderPane.alignment="CENTER" />
                         </top>
                         <center>
-                           <ListView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+                           <ListView fx:id="testHistoryListView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
                         </center>
                      </BorderPane>
                   </children>
@@ -83,7 +84,7 @@
                   <center>
                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="361.0" prefWidth="286.0" BorderPane.alignment="CENTER">
                         <children>
-                           <ListView layoutX="43.0" layoutY="81.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0" />
+                            <TextArea fx:id="fileContentArea" layoutX="43.0" layoutY="81.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0" />
                         </children>
                      </AnchorPane>
                   </center>

@@ -144,7 +144,11 @@ public class DecisionTree {
         return classMax;
     }
 
-    public void buildTree(Node currentNode, List<Attribute> attributesRestants, List<Instance> instancesRestantes) {
+    public void id3(List<Attribute> attributes, List<Instance> instances){
+
+        buildTree(root, attributes, instances);
+    }
+    private  void buildTree(Node currentNode, List<Attribute> attributesRestants, List<Instance> instancesRestantes) {
         calculateNp(instancesRestantes, attributesRestants);
 
         double maxGain = 0;
@@ -187,8 +191,8 @@ public class DecisionTree {
         }
     }
 
-    public String evaluateInstance(Instance instance, Node racine) {
-        Node currentNode = racine;
+    public String evaluateInstance(Instance instance) {
+        Node currentNode = root.clone();
 
         while (!currentNode.isLeaf()) {
             Attribute attributeCourant = currentNode.getAttribute();
@@ -211,12 +215,12 @@ public class DecisionTree {
         return currentNode.getMajorClass();
     }
 
-    public int[][] generateConfusionMatrix(List<Instance> dataTest, Node racine) {
+    public int[][] generateConfusionMatrix(List<Instance> dataTest) {
         int[][] matrix = new int[classes.size()][classes.size()];
 
         for (Instance i : dataTest) {
             String classReel = i.getClassLabel();
-            String classPred = evaluateInstance(i, racine);
+            String classPred = evaluateInstance(i);
             int indiceClassReel = 0;
             int indiceClassPred = 0;
 

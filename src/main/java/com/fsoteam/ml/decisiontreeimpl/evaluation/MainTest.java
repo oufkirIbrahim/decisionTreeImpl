@@ -25,13 +25,13 @@ public class MainTest {
         String fileName = "contact-lenses.arff";
 
         Scanner clavier = new Scanner(System.in);
-        List<Instance> DataSets = new ArrayList<>();
+        List<Instance> datasets = new ArrayList<>();
         List<Attribute> attributes = new ArrayList<>();
         CustomFileReader fichier = new CustomFileReader(fileName);
         DecisionTree arbre ;
         Node racine = new Node();
-        DataSets = fichier.dataSet;
-        attributes = fichier.attributs;
+        datasets = fichier.getDataSet();
+        attributes = fichier.getAttributs();
 
 
         int i=1;
@@ -43,11 +43,11 @@ public class MainTest {
 
 
         attributes.remove(attributes.size() - 1);
-        System.out.println(DataSets.size() + "\n");
+        System.out.println(datasets.size() + "\n");
         System.out.println(attributes.size() + "\n");
         System.out.println(classes.size() + "\n");
-        System.out.println("\nsize of dataSet : " + DataSets.size() + "\nsize of attributes : " + attributes.size() + "\n");
-        DataSet corpus = new DataSet(DataSets);
+        System.out.println("\nsize of dataSet : " + datasets.size() + "\nsize of attributes : " + attributes.size() + "\n");
+        DataSet corpus = new DataSet(datasets);
 
         arbre = new DecisionTree(racine, classes);
 
@@ -61,8 +61,8 @@ public class MainTest {
             switch (choix) {
                 case 1:
                     System.out.println("vous avez choisir le premier choix ");
-                    arbre.buildTree(racine, attributes, DataSets);
-                    ConfusionMatrix M = new ConfusionMatrix(arbre.generateConfusionMatrix(DataSets, racine),nombreClasse);
+                    arbre.id3(attributes, datasets);
+                    ConfusionMatrix M = new ConfusionMatrix(arbre.generateConfusionMatrix(datasets),nombreClasse);
                     for (int[] tabi : M.getElements()) {
                         for (int index : tabi) {
                             System.out.print(index + " ");
@@ -75,15 +75,15 @@ public class MainTest {
                     System.out.println("vous avez choisir le deuxième choix ");
                     System.out.println("Entrer le pourcentage du test 'entier entre 1-99' ");
                     int Pourc = clavier.nextInt();
-                    double k = (double) Pourc * DataSets.size() / 100;
+                    double k = (double) Pourc * datasets.size() / 100;
                     System.out.println("k = " + k);
                     TrainTest divise = corpus.trainTest(k);
                     List<Instance> train = divise.getTrain();
                     List<Instance> test = divise.getTest();
                     System.out.println("Size of Train : " + train.size());
                     System.out.println("Size of Test : " + test.size());
-                    arbre.buildTree(racine, attributes, train);
-                    ConfusionMatrix M1 = new ConfusionMatrix(arbre.generateConfusionMatrix(test, racine),nombreClasse);
+                    arbre.id3(attributes, train);
+                    ConfusionMatrix M1 = new ConfusionMatrix(arbre.generateConfusionMatrix(test),nombreClasse);
                     for (int[] tabi : M1.getElements()) {
                         for (int index : tabi) {
                             System.out.print(index + " ");
@@ -106,8 +106,8 @@ public class MainTest {
                         System.out.println("Size of Train : " + trainCross.size());
                         System.out.println("Size of Test : " + testCross.size());
                         n++;
-                        arbre.buildTree(racine, attributes, trainCross);
-                        ConfusionMatrix M2 = new ConfusionMatrix(arbre.generateConfusionMatrix(testCross, racine),nombreClasse);
+                        arbre.id3(attributes, trainCross);
+                        ConfusionMatrix M2 = new ConfusionMatrix(arbre.generateConfusionMatrix(testCross),nombreClasse);
                         MatricesConf.add(M2);
                         /*for (int[] tabi : M2.elements) {
                             for (int index : tabi) {
@@ -142,7 +142,7 @@ public class MainTest {
 
                     String Ensoleille, Temperature, Humidite, Vent;
                     Node root = new Node();
-                    arbre.buildTree(root, attributes, DataSets);
+                    arbre.id3(attributes, datasets);
                     System.out.println("----->1:saisir le premier attribut "+attributes.get(0).getAttributeName());
                     clavier.nextLine();
                     Ensoleille = clavier.nextLine();
@@ -158,7 +158,7 @@ public class MainTest {
                     attList.add(Humidite);
                     attList.add(Vent);
                     Instance instance = new Instance(99, attList);
-                    System.out.println(arbre.evaluateInstance(instance, root));
+                    System.out.println(arbre.evaluateInstance(instance));
                     break;
                 default:
                     throw new AssertionError();
