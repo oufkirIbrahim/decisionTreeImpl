@@ -17,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.text.Font;
 
+import java.io.IOException;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -36,21 +37,16 @@ public class RunTestController {
 
     private SharedData sharedData;
 
-    private DatasetInitializer datasetInitializer;
-
     @FXML
     public void initialize() {
 
         this.sharedData = SharedData.getInstance();
-        this.datasetInitializer = new DatasetInitializer();
         //this.datasetInitializer = sharedData.getDatasetInitializer();
 
         // Add change listeners to radio buttons
         addRadioButtonListener(testOptions_trainingSet, crossValidationFoldEt, percentageSplitEt);
         addRadioButtonListener(testOptions_crossValidation, crossValidationFoldEt, percentageSplitEt);
         addRadioButtonListener(testOptions_percentageSplit, crossValidationFoldEt, percentageSplitEt);
-
-        populateDataset();
 
         // Populate testHistoryListView
         for (int i = 0; i < 20; i++) {
@@ -94,34 +90,6 @@ public class RunTestController {
 
     }
 
-    public void populateDataset(){
-
-        String fileName = "contact-lenses.arff";
-
-        List<Attribute> attributes = new ArrayList<Attribute>();
-        List<DecisionTreeClass> decisionTreeClasses = new ArrayList<DecisionTreeClass>();
-
-        CustomFileReader file = new CustomFileReader(fileName);
-
-
-
-        attributes = file.getAttributs();
-
-        int i=1;
-        for(Branch b:attributes.get(attributes.size() - 1).getBranches()){
-            decisionTreeClasses.add( new DecisionTreeClass(i,b.getValue(),0));
-            i++;
-        }
-        attributes.remove(attributes.size() - 1);
-
-        this.datasetInitializer.setDataSetSource(fileName);
-        this.datasetInitializer = new DatasetInitializer();
-        this.datasetInitializer.setAttributes(attributes);
-        this.datasetInitializer.setInstanceData(file.getDataSet());
-        this.datasetInitializer.setDecisionTreeClasses(decisionTreeClasses);
-
-    }
-
     private void addRadioButtonListener(RadioButton radioButton, TextField... textFields) {
         radioButton.selectedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
@@ -136,15 +104,15 @@ public class RunTestController {
         TrainTest trainTest;
         if (testOptions_trainingSet.isSelected()) {
             // Option 1: The test corpus is equal to the train corpus
-            trainTest = new TrainTest(datasetInitializer.getInstanceData(), datasetInitializer.getInstanceData());
+            trainTest = new TrainTest(this.sharedData.getDatasetInitializer().getInstanceData(), this.sharedData.getDatasetInitializer().getInstanceData());
         } else if (testOptions_crossValidation.isSelected()) {
             // Option 2: Select K (Folds) from train set to test them
             // You need to implement the method divideIntoKFolds
-            trainTest = divideIntoKFolds(datasetInitializer.getInstanceData(), Integer.parseInt(crossValidationFoldEt.getText()));
+            trainTest = divideIntoKFolds(this.sharedData.getDatasetInitializer().getInstanceData(), Integer.parseInt(crossValidationFoldEt.getText()));
         } else if (testOptions_percentageSplit.isSelected()) {
             // Option 3: Use percentage to divide the train set into train + test set
             // You need to implement the method divideByPercentage
-            trainTest = divideByPercentage(datasetInitializer.getInstanceData(), Double.parseDouble(percentageSplitEt.getText()));
+            trainTest = divideByPercentage(this.sharedData.getDatasetInitializer().getInstanceData(), Double.parseDouble(percentageSplitEt.getText()));
         } else {
             // No option selected
             return;
@@ -156,6 +124,14 @@ public class RunTestController {
 
         // Test the model using the testing set
         testModel(this.sharedData.getTrainedModel() , trainTest.getTest());
+        if(sharedData.getTrainedModel() != null) {
+            System.out.println("Model trained successfully");
+            try {
+                HelloController.modelHasTrained();
+            } catch (IOException e) {
+                throw new RuntimeException("Something went wrong while loading the modelHasTrained scene");
+            }
+        }
     }
 
     private TrainTest divideIntoKFolds(List<Instance> data, int testFoldSize) {
@@ -227,8 +203,8 @@ public class RunTestController {
 
     private DecisionTree trainModel(List<Instance> trainData) {
         // Train the model using the trainData
-        DecisionTree model = new DecisionTree(new Node(), datasetInitializer.getDecisionTreeClasses());
-        model.id3( datasetInitializer.getAttributes(), trainData);
+        DecisionTree model = new DecisionTree(new Node(), this.sharedData.getDatasetInitializer().getDecisionTreeClasses());
+        model.id3( this.sharedData.getDatasetInitializer().getAttributes(), trainData);
         return model;
     }
 

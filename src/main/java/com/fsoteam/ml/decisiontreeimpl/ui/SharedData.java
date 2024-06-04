@@ -24,6 +24,7 @@ public class SharedData {
     }
 
     public DatasetInitializer getDatasetInitializer() {
+        System.out.println("getDatasetInitializer called for instance" + instance);
         return datasetInitializer;
     }
 

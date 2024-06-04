@@ -5,6 +5,7 @@ import com.fsoteam.ml.decisiontreeimpl.model.DecisionTreeClass;
 import com.fsoteam.ml.decisiontreeimpl.model.Instance;
 import javafx.collections.ObservableList;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DatasetInitializer {
@@ -13,14 +14,21 @@ public class DatasetInitializer {
     private List<Instance> instanceData;
     private List<Attribute> attributes;
     private List<DecisionTreeClass> decisionTreeClasses;
+    private String className;
 
     public DatasetInitializer() {
+        this.className = "";
+        this.attributes = new ArrayList<Attribute>();
+        this.decisionTreeClasses = new ArrayList<DecisionTreeClass>();
+        this.instanceData = new ArrayList<Instance>();
+        this.dataSetSource = "";
     }
 
-    public DatasetInitializer(String ataSetSource, List<Instance> instanceData, List<Attribute> attributes, List<DecisionTreeClass> decisionTreeClasses) {
+    public DatasetInitializer(String ataSetSource, List<Instance> instanceData, List<Attribute> attributes, List<DecisionTreeClass> decisionTreeClasses, String className) {
         this.instanceData = instanceData;
         this.attributes = attributes;
         this.decisionTreeClasses = decisionTreeClasses;
+        this.className = className;
     }
 
     public String getDataSetSource() {
@@ -53,5 +61,13 @@ public class DatasetInitializer {
 
     public void setDecisionTreeClasses(List<DecisionTreeClass> decisionTreeClasses) {
         this.decisionTreeClasses = decisionTreeClasses;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
     }
 }
