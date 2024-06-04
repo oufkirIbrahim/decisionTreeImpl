@@ -1,8 +1,11 @@
 package com.fsoteam.ml.decisiontreeimpl.ui;
 
 import com.fsoteam.ml.decisiontreeimpl.decisionTree.Attribute;
+import com.fsoteam.ml.decisiontreeimpl.decisionTree.Branch;
+import com.fsoteam.ml.decisiontreeimpl.model.DecisionTreeClass;
 import com.fsoteam.ml.decisiontreeimpl.model.Instance;
 import com.fsoteam.ml.decisiontreeimpl.utils.CustomFileReader;
+import com.fsoteam.ml.decisiontreeimpl.utils.DatasetInitializer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,6 +15,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UploadDataController {
@@ -27,9 +32,13 @@ public class UploadDataController {
 
     private ObservableList<Instance> instanceData;
     private List<Attribute> attributes;
+    private SharedData sharedData;
 
     @FXML
     private void initialize() {
+
+        this.sharedData = SharedData.getInstance();
+
         instanceData = FXCollections.observableArrayList();
         dataTable.setItems(instanceData);
 
@@ -50,9 +59,12 @@ public class UploadDataController {
     }
 
     private void loadDataFromFile(File file) {
-        CustomFileReader fileReader = new CustomFileReader(file.getAbsolutePath());
-        instanceData.clear();
-        instanceData.addAll(fileReader.dataSet);
+
+        this.populateDataset(file.getAbsolutePath());
+        this.instanceData.clear();
+        this.instanceData.addAll(this.sharedData.getDatasetInitializer().getInstanceData());
+        String classLabel = this.sharedData.getDatasetInitializer().getClassName();
+        System.out.println("Class label: " + classLabel);
         // Clear previous columns except for ID
         dataTable.getColumns().remove(0, dataTable.getColumns().size());
 
@@ -63,8 +75,8 @@ public class UploadDataController {
         dataTable.getColumns().add(idColumn);
 
         // Use the attributes to create columns
-        attributes = fileReader.attributs;
-        for (int i = 0; i < attributes.size() - 1; i++) {
+        attributes = sharedData.getDatasetInitializer().getAttributes();
+        for (int i = 0; i < attributes.size(); i++) {
             Attribute attribute = attributes.get(i);
             TableColumn<Instance, String> attrColumn = new TableColumn<>(attribute.getAttributeName());
             int finalI = i;
@@ -76,13 +88,44 @@ public class UploadDataController {
         }
 
         // Add class label column
-        TableColumn<Instance, String> classLabelColumn = new TableColumn<>(attributes.get(attributes.size() - 1).getAttributeName()) ;
+        TableColumn<Instance, String> classLabelColumn = new TableColumn<>(classLabel) ;
         classLabelColumn.setCellValueFactory(cellData -> javafx.beans.binding.Bindings.createObjectBinding(cellData.getValue()::getClassLabel));
         dataTable.getColumns().add(classLabelColumn);
+    }
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("subScenes/runTest.fxml"));
-        RunTestController controller = fxmlLoader.getController();
-        controller.setAttributes(attributes);
-        controller.setInstanceData(instanceData);
+    private void populateDataset(String fileName){
+
+        DatasetInitializer datasetInitializer = new DatasetInitializer();
+
+
+        List<Attribute> attributes = new ArrayList<Attribute>();
+        List<DecisionTreeClass> decisionTreeClasses = new ArrayList<DecisionTreeClass>();
+
+        CustomFileReader file = new CustomFileReader(fileName);
+
+
+
+        attributes = file.getAttributs();
+
+        int i=1;
+        for(Branch b:attributes.get(attributes.size() - 1).getBranches()){
+            decisionTreeClasses.add( new DecisionTreeClass(i,b.getValue(),0));
+            i++;
+        }
+
+        datasetInitializer.setDataSetSource(fileName);
+        datasetInitializer.setAttributes(attributes);
+        datasetInitializer.setClassName(attributes.remove(attributes.size() - 1).getAttributeName());
+        datasetInitializer.setInstanceData(file.getDataSet());
+        datasetInitializer.setDecisionTreeClasses(decisionTreeClasses);
+
+        this.sharedData.setDatasetInitializer(datasetInitializer);
+        if(sharedData.getDatasetInitializer() != null) {
+            try {
+                HelloController.dataHasLoaded();
+            } catch (IOException e) {
+                throw new RuntimeException("Something went wrong while loading the scenes after data has been loaded");
+            }
+        }
     }
 }

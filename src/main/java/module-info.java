@@ -15,4 +15,5 @@ module com.fsoteam.ml.decisiontreeimpl {
     opens com.fsoteam.ml.decisiontreeimpl to javafx.fxml;
     exports com.fsoteam.ml.decisiontreeimpl.ui;
     opens com.fsoteam.ml.decisiontreeimpl.ui to javafx.fxml;
+    opens com.fsoteam.ml.decisiontreeimpl.model to javafx.base;
 }
