@@ -28,7 +28,7 @@ public class CustomFileReader {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                if (line.startsWith("@attribute")) {
+                if (line.toLowerCase().startsWith("@attribute")) {
                     int firstBraceIndex = line.indexOf("{");
                     int lastBraceIndex = line.indexOf("}");
                     String attributeName = line.substring(11, firstBraceIndex).trim();
@@ -39,7 +39,7 @@ public class CustomFileReader {
                     }
                     attributs.add(new Attribute(attributeName, branchesList));
                 }
-                if (line.startsWith("@data")) {
+                if (line.toLowerCase().startsWith("@data")) {
                     String dataLine;
                     while ((dataLine = reader.readLine()) != null && !dataLine.startsWith("%")) {
                         List<String> attributeValues = new ArrayList<>(Arrays.asList(dataLine.split(",")));

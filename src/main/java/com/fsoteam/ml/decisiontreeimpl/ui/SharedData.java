@@ -11,6 +11,7 @@ public class SharedData {
     private DatasetInitializer datasetInitializer;
     private DecisionTree trainedModel;
     private List<Instance> trainingData;
+    private List<Instance> testingData;
 
     private SharedData() {
         // Private constructor to prevent creating multiple instances
@@ -46,5 +47,13 @@ public class SharedData {
 
     public void setTrainingData(List<Instance> trainingData) {
         this.trainingData = trainingData;
+    }
+
+    public List<Instance> getTestingData() {
+        return testingData;
+    }
+
+    public void setTestingData(List<Instance> testingData) {
+        this.testingData = testingData;
     }
 }

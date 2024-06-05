@@ -6,6 +6,7 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -13,7 +14,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.control.TextArea?>
 <AnchorPane prefHeight="546.0" prefWidth="856.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fsoteam.ml.decisiontreeimpl.ui.RunTestController">
     <SplitPane dividerPositions="0.5" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
         <items>
@@ -84,7 +84,7 @@
                   <center>
                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="361.0" prefWidth="286.0" BorderPane.alignment="CENTER">
                         <children>
-                            <TextArea fx:id="fileContentArea" layoutX="43.0" layoutY="81.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0" />
+                            <TextArea fx:id="fileContentArea" layoutX="43.0" layoutY="81.0" prefHeight="200.0" prefWidth="200.0" style="-fx-whitespace: pre;" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0" />
                         </children>
                      </AnchorPane>
                   </center>

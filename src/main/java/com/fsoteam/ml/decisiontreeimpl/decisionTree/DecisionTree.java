@@ -5,7 +5,7 @@ import com.fsoteam.ml.decisiontreeimpl.model.Instance;
 
 import java.util.*;
 
-public class DecisionTree {
+public class DecisionTree implements Cloneable{
 
     private Node root;
     private List<DecisionTreeClass> classes;
@@ -266,6 +266,20 @@ public class DecisionTree {
                 text.append(indentation).append("  Branch: ").append(branche.getValue()).append("\n");
                 displayTreeString(branche.getChildNode(), indentation + "    ");
             }
+        }
+    }
+
+    public Node getRoot() {
+        return root;
+    }
+
+    @Override
+    public DecisionTree clone() {
+        try {
+            // TODO: copy mutable state here, so the clone can't change the internals of the original
+            return (DecisionTree) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
         }
     }
 }
