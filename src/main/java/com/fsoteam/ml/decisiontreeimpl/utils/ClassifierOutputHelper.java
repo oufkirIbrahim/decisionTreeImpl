@@ -225,30 +225,45 @@ public class ClassifierOutputHelper {
     public String generateOutput() {
 
         String output = String.format(
-                "=== Run information ===\n\n" +
-                        "Scheme:       %s\n" +
-                        "Relation:     %s\n" +
-                        "Instances:    %d\n" +
-                        "Attributes:   %d\n" +
-                        "%s\n" +
-                        "Test mode:    %s\n\n" +
-                        "=== Classifier model (full training set) ===\n\n" +
-                        "Time taken to build model: %s seconds\n\n" +
-                        "=== Evaluation on training set ===\n\n" +
-                        "Time taken to test model on training data: %s seconds\n\n" +
-                        "=== Summary ===\n\n" +
-                        "Correctly Classified Instances             %d\n              %f\n" +
-                        "Incorrectly Classified Instance            %d\n              %f\n" +
-                        "Kappa statistic                            %f\n" +
-                        "Mean absolute error                        %f\n" +
-                        "Root mean squared error                    %f\n" +
-                        "Relative absolute error                    %f     \n" +
-                        "Root relative squared error                %f \n" +
-                        "Total Number of Instances                  %d\n\n" +
-                        "=== Detailed Accuracy By Class ===\n\n" +
-                        "%s\n\n" +
-                        "=== Confusion Matrix ===\n\n" +
-                        "%s\n",
+                """
+                        === Run information ===
+
+                        Scheme:       %s
+                        Relation:     %s
+                        Instances:    %d
+                        Attributes:   %d
+                        %s
+                        Test mode:    %s
+
+                        === Classifier model ===
+
+                        Time taken to build model: %s seconds
+
+                        === Evaluation on training set ===
+
+                        Time taken to test model on training data: %s seconds
+
+                        === Summary ===
+
+                        Correctly Classified Instances             %d
+                                      %.5f
+                        Incorrectly Classified Instance            %d
+                                      %.5f
+                        Kappa statistic                            %.5f
+                        Mean absolute error                        %.5f
+                        Root mean squared error                    %.5f
+                        Relative absolute error                    %.5f
+                        Root relative squared error                %.5f
+                        Total Number of Instances                  %d
+
+                        === Detailed Accuracy By Class ===
+
+                        %s
+
+                        === Confusion Matrix ===
+
+                        %s
+                        """,
                 scheme, relation, datasetSize, attributes.size(), getAttributesFormatted(),
                 testMode,
                 buildTime, testTime, correct, correctPercentage, incorrect, incorrectPercentage,
@@ -276,8 +291,8 @@ public class ClassifierOutputHelper {
 
         for (DetailedAccuracy detailedAccuracy : detailedAccuracyByClass) {
             output.append(String.format(
-                    "%f   %f   %f   %f   %f   %f   %f   %f     %s\n",
-                    detailedAccuracy.getTpRate(), detailedAccuracy.getFpRate(), detailedAccuracy.getPrecision(), detailedAccuracy.getRecall(), detailedAccuracy.getfMeasure(), detailedAccuracy.getMcc(), detailedAccuracy.getRocArea(), detailedAccuracy.getPrcArea(), detailedAccuracy.getClassName()
+                    "%s   %s   %s   %s   %s  %s   %s   %s     %s\n",
+                    safeDoubleInput(detailedAccuracy.getTpRate()), safeDoubleInput(detailedAccuracy.getFpRate()), safeDoubleInput(detailedAccuracy.getPrecision()), safeDoubleInput(detailedAccuracy.getRecall()), safeDoubleInput(detailedAccuracy.getfMeasure()), safeDoubleInput(detailedAccuracy.getMcc()), safeDoubleInput(detailedAccuracy.getRocArea()), safeDoubleInput(detailedAccuracy.getPrcArea()), detailedAccuracy.getClassName()
             ));
 
             avgTpRate += detailedAccuracy.getTpRate();
@@ -299,8 +314,8 @@ public class ClassifierOutputHelper {
         avgRocArea /= detailedAccuracyByClass.size();
         avgPrcArea /= detailedAccuracyByClass.size();
         output.append(String.format(
-                "%f   %f   %f   %f   %f   %f   %f   %f     %s\n",
-                avgTpRate, avgFpRate, avgPrecision, avgRecall, avgFMeasure, avgMcc, avgRocArea, avgPrcArea, "AVG"
+                "%s   %s   %s   %s   %s  %s   %s   %s     %s\n",
+                safeDoubleInput(avgTpRate), safeDoubleInput(avgFpRate), safeDoubleInput(avgPrecision), safeDoubleInput(avgRecall), safeDoubleInput(avgFMeasure), safeDoubleInput(avgMcc), safeDoubleInput(avgRocArea), safeDoubleInput(avgPrcArea), "AVG"
         ));
 
         return output.toString();
@@ -308,13 +323,21 @@ public class ClassifierOutputHelper {
 
     public String getConfusionMatrixValuesFormatted() {
         StringBuilder output = new StringBuilder();
+        int whitespaces = String.valueOf(totalNumberOfInstances).length() + 1;
         for (int[] row : confusionMatrixValues) {
             for (int value : row) {
-                output.append(value).append(" ");
+                output.append(String.format("%" + whitespaces + "d", value));
             }
             output.append("\n");
         }
         return output.toString();
+    }
+
+    private String safeDoubleInput(Double input) {
+        if(input.isNaN()) {
+            return String.format("%-5s", "?");
+        }else
+            return String.format("%.5f", input);
     }
 
 }

@@ -4,10 +4,7 @@ import com.fsoteam.ml.decisiontreeimpl.decisionTree.Attribute;
 import com.fsoteam.ml.decisiontreeimpl.decisionTree.Branch;
 import com.fsoteam.ml.decisiontreeimpl.decisionTree.DecisionTree;
 import com.fsoteam.ml.decisiontreeimpl.decisionTree.Node;
-import com.fsoteam.ml.decisiontreeimpl.model.DataSet;
-import com.fsoteam.ml.decisiontreeimpl.model.DecisionTreeClass;
-import com.fsoteam.ml.decisiontreeimpl.model.Instance;
-import com.fsoteam.ml.decisiontreeimpl.model.TrainTest;
+import com.fsoteam.ml.decisiontreeimpl.model.*;
 import com.fsoteam.ml.decisiontreeimpl.utils.CustomFileReader;
 
 import java.io.*;
@@ -63,7 +60,7 @@ public class MainTest {
                     System.out.println("vous avez choisir le premier choix ");
                     arbre.id3(attributes, datasets);
                     ConfusionMatrix M = new ConfusionMatrix(arbre.generateConfusionMatrix(datasets),nombreClasse);
-                    for (int[] tabi : M.getElements()) {
+                    for (int[] tabi : M.getMatrix()) {
                         for (int index : tabi) {
                             System.out.print(index + " ");
                         }
@@ -84,7 +81,7 @@ public class MainTest {
                     System.out.println("Size of Test : " + test.size());
                     arbre.id3(attributes, train);
                     ConfusionMatrix M1 = new ConfusionMatrix(arbre.generateConfusionMatrix(test),nombreClasse);
-                    for (int[] tabi : M1.getElements()) {
+                    for (int[] tabi : M1.getMatrix()) {
                         for (int index : tabi) {
                             System.out.print(index + " ");
                         }
@@ -122,13 +119,13 @@ public class MainTest {
                     for (ConfusionMatrix Matrice : MatricesConf) {
                         for (int g = 0; g < nombreClasse; g++) {
                             for (int h = 0; h < nombreClasse; h++) {
-                                matrice[g][h] += Matrice.getElements()[g][h];
+                                matrice[g][h] += Matrice.getMatrix()[g][h];
                             }
                         }
                     }
 
                     ConfusionMatrix MatriceFinal = new ConfusionMatrix(matrice,nombreClasse);
-                    for (int[] tabi : MatriceFinal.getElements()) {
+                    for (int[] tabi : MatriceFinal.getMatrix()) {
                         for (int indexo : tabi) {
                             System.out.print(indexo + " ");
                         }

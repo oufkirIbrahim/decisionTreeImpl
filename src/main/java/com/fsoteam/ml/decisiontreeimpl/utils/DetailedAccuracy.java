@@ -14,6 +14,15 @@ public class DetailedAccuracy {
     private String className;
 
     public DetailedAccuracy() {
+        this.setClassName("");
+        this.setTpRate(0);
+        this.setFpRate(0);
+        this.setPrecision(0);
+        this.setRecall(0);
+        this.setfMeasure(0);
+        this.setMcc(0);
+        this.setRocArea(0);
+        this.setPrcArea(0);
     }
 
     public DetailedAccuracy(double tpRate, double fpRate, double precision, double recall, double fMeasure, double mcc, double rocArea, double prcArea, String className) {
@@ -99,4 +108,5 @@ public class DetailedAccuracy {
     public void setClassName(String className) {
         this.className = className;
     }
+
 }
