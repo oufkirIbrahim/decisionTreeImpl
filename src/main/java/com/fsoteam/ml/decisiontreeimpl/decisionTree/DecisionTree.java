@@ -242,6 +242,7 @@ public class DecisionTree implements Cloneable{
         return matrix;
     }
 
+
     public void displayTree(Node currentNode, String indentation) {
         if (currentNode.isLeaf()) {
             System.out.println(indentation + "Leaf: " + currentNode.getMajorClass());

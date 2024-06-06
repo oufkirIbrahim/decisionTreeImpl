@@ -3,7 +3,9 @@ package com.fsoteam.ml.decisiontreeimpl.ui;
 import com.fsoteam.ml.decisiontreeimpl.decisionTree.DecisionTree;
 import com.fsoteam.ml.decisiontreeimpl.model.Instance;
 import com.fsoteam.ml.decisiontreeimpl.utils.DatasetInitializer;
+import com.fsoteam.ml.decisiontreeimpl.utils.TrainedModelObserver;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SharedData {
@@ -12,6 +14,7 @@ public class SharedData {
     private DecisionTree trainedModel;
     private List<Instance> trainingData;
     private List<Instance> testingData;
+    private List<TrainedModelObserver> observers = new ArrayList<>();
 
     private SharedData() {
         // Private constructor to prevent creating multiple instances
@@ -39,6 +42,7 @@ public class SharedData {
 
     public void setTrainedModel(DecisionTree trainedModel) {
         this.trainedModel = trainedModel;
+        notifyObservers();
     }
 
     public List<Instance> getTrainingData() {
@@ -55,5 +59,19 @@ public class SharedData {
 
     public void setTestingData(List<Instance> testingData) {
         this.testingData = testingData;
+    }
+
+    public void addObserver(TrainedModelObserver observer) {
+        observers.add(observer);
+    }
+
+    public void removeObserver(TrainedModelObserver observer) {
+        observers.remove(observer);
+    }
+
+    private void notifyObservers() {
+        for (TrainedModelObserver observer : observers) {
+            observer.onTrainedModelChanged();
+        }
     }
 }
