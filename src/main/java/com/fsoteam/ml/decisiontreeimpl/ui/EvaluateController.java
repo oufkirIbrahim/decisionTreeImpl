@@ -8,6 +8,7 @@ import com.fsoteam.ml.decisiontreeimpl.model.DataSet;
 import com.fsoteam.ml.decisiontreeimpl.model.DecisionTreeClass;
 import com.fsoteam.ml.decisiontreeimpl.model.Instance;
 import com.fsoteam.ml.decisiontreeimpl.utils.CustomFileReader;
+import com.fsoteam.ml.decisiontreeimpl.utils.TrainedModelObserver;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -21,7 +22,7 @@ import java.util.List;
 import java.util.Random;
 
 
-public class EvaluateController {
+public class EvaluateController implements TrainedModelObserver {
 
     private SharedData sharedData;
     @FXML
@@ -31,17 +32,21 @@ public class EvaluateController {
 
     @FXML
     private Button evaluateButton;
-    private List<TextField> inputFields = new ArrayList<>();
+    private List<ChoiceBox> inputFields = new ArrayList<>();
     private List<Attribute> attributes = new ArrayList<>();
 
     @FXML
     public void initialize() {
-        sharedData = SharedData.getInstance();
-        loadDataFromFile();
+        this.sharedData = SharedData.getInstance();
+        this.sharedData.addObserver(this);
+        evaluate();
 
     }
-
-    private void loadDataFromFile() {
+    @Override
+    public void onTrainedModelChanged() {
+        evaluate();
+    }
+    private void evaluate() {
 
         attributes = this.sharedData.getDatasetInitializer().getAttributes();
 
@@ -50,16 +55,24 @@ public class EvaluateController {
         vboxInputs.getChildren().clear();
         for (int i = 0; i < attributes.size(); i++) {
             Label label = new Label(attributes.get(i).getAttributeName());
-            TextField textField = new TextField();
-            inputFields.add(textField);
+            ChoiceBox<String> choiceBox = new ChoiceBox<>();
+            inputFields.add(choiceBox);
+
+
+            // Populate the ChoiceBox with the branches of the attribute
+            for (Branch branch : attributes.get(i).getBranches()) {
+                choiceBox.getItems().add(branch.getValue());
+            }
 
             label.setLayoutX(10);
             label.setLayoutY(40 + (i * 40));
-            textField.setLayoutX(10);
-            textField.setLayoutY(60 + (i * 40));
+            choiceBox.setLayoutX(10);
+            choiceBox.setLayoutY(60 + (i * 40));
+            choiceBox.setMinWidth(180);
+            choiceBox.setMaxWidth(180);
 
             vboxInputs.getChildren().add(label);
-            vboxInputs.getChildren().add(textField);
+            vboxInputs.getChildren().add(choiceBox);
         }
 
         // Add the evaluate button
@@ -68,11 +81,6 @@ public class EvaluateController {
         vboxInputs.getChildren().add(evaluateButton);
 
 
-
-        //-----------------------------------
-
-
-        //----------------------------------
         // Setup table columns for attributes
         resultTable.getColumns().clear();
         for (int j = 0; j < attributes.size(); j++) {
@@ -92,8 +100,8 @@ public class EvaluateController {
     private void handleEvaluate() {
 
         List<String> attributeValues = new ArrayList<>();
-        for (TextField field : inputFields) {
-            attributeValues.add(field.getText());
+        for (ChoiceBox choiceBox : inputFields) {
+            attributeValues.add((String) choiceBox.getValue());
         }
 
         Random rand  = new Random();

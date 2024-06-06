@@ -35,6 +35,9 @@ public class Node implements Cloneable{
         this.majorClass = majorClass;
     }
 
+    public String getAttributeName(){
+        return attribute.getAttributeName();
+    }
 
     @Override
     public Node clone() {
