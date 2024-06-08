@@ -3,6 +3,7 @@ package com.fsoteam.ml.decisiontreeimpl.ui;
 import com.fsoteam.ml.decisiontreeimpl.decisionTree.DecisionTree;
 import com.fsoteam.ml.decisiontreeimpl.model.Instance;
 import com.fsoteam.ml.decisiontreeimpl.utils.DatasetInitializer;
+import com.fsoteam.ml.decisiontreeimpl.utils.LearningModel;
 import com.fsoteam.ml.decisiontreeimpl.utils.TrainedModelObserver;
 
 import java.util.ArrayList;
@@ -11,9 +12,10 @@ import java.util.List;
 public class SharedData {
     private static SharedData instance = null;
     private DatasetInitializer datasetInitializer;
-    private DecisionTree trainedModel;
+    private LearningModel trainedModel;
     private List<Instance> trainingData;
     private List<Instance> testingData;
+    private String learningAlgorithm;
     private List<TrainedModelObserver> observers = new ArrayList<>();
 
     private SharedData() {
@@ -28,7 +30,6 @@ public class SharedData {
     }
 
     public DatasetInitializer getDatasetInitializer() {
-        System.out.println("getDatasetInitializer called for instance" + instance);
         return datasetInitializer;
     }
 
@@ -36,11 +37,11 @@ public class SharedData {
         this.datasetInitializer = datasetInitializer;
     }
 
-    public DecisionTree getTrainedModel() {
+    public LearningModel getTrainedModel() {
         return trainedModel;
     }
 
-    public void setTrainedModel(DecisionTree trainedModel) {
+    public void setTrainedModel(LearningModel trainedModel) {
         this.trainedModel = trainedModel;
         notifyObservers();
     }
@@ -59,6 +60,14 @@ public class SharedData {
 
     public void setTestingData(List<Instance> testingData) {
         this.testingData = testingData;
+    }
+
+    public String getLearningAlgorithm() {
+        return learningAlgorithm;
+    }
+
+    public void setLearningAlgorithm(String learningAlgorithm) {
+        this.learningAlgorithm = learningAlgorithm;
     }
 
     public void addObserver(TrainedModelObserver observer) {

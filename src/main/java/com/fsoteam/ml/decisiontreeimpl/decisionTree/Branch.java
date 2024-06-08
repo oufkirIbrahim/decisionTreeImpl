@@ -1,6 +1,9 @@
 package com.fsoteam.ml.decisiontreeimpl.decisionTree;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * This class represents a branch in a decision tree.
  * It implements Cloneable interface to create a copy of the branch object.
@@ -77,10 +80,23 @@ public class Branch implements Cloneable {
      */
     @Override
     public Branch clone() {
+        return clone(new HashMap<>());
+    }
+
+    public Branch clone(Map<Object, Object> clonesMap) {
+        if (clonesMap.containsKey(this)) {
+            return (Branch) clonesMap.get(this);
+        }
+
         try {
-            return (Branch) super.clone();
+            Branch cloned = (Branch) super.clone();
+            clonesMap.put(this, cloned);
+
+            cloned.childNode = this.childNode != null ? this.childNode.clone(clonesMap) : null;
+
+            return cloned;
         } catch (CloneNotSupportedException e) {
-            throw new AssertionError(); // Can't happen as we implement Cloneable
+            throw new AssertionError();
         }
     }
 
@@ -88,5 +104,24 @@ public class Branch implements Cloneable {
         this.totalInstanceCount = 0;
         this.instanceIds = new int[0];
         this.instanceCountsInClasses = new int[count];
+    }
+
+    public void incrementTotalInstanceCount() {
+        this.totalInstanceCount++;
+    }
+
+    public String getClassName() {
+        return childNode.getMajorClass();
+    }
+
+    public void incrementInstanceCountInClass(int i) {
+        this.instanceCountsInClasses[i]++;
+    }
+
+    public void addInstanceId(int instanceId) {
+        int[] newIds = new int[instanceIds.length + 1];
+        System.arraycopy(instanceIds, 0, newIds, 0, instanceIds.length);
+        newIds[instanceIds.length] = instanceId;
+        instanceIds = newIds;
     }
 }

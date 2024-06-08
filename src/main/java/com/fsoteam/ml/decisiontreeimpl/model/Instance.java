@@ -1,5 +1,6 @@
 package com.fsoteam.ml.decisiontreeimpl.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.fsoteam.ml.decisiontreeimpl.decisionTree.Attribute;
 import com.fsoteam.ml.decisiontreeimpl.decisionTree.Branch;
@@ -19,6 +20,12 @@ public class Instance {
     public Instance(int instanceId, List<String> attributeValues) {
         this.instanceId = instanceId;
         this.attributeValues = attributeValues;
+    }
+
+    public Instance(Instance other) {
+        this.instanceId = other.instanceId;
+        this.attributeValues = new ArrayList<>(other.attributeValues);
+        this.classLabel = other.classLabel;
     }
 
     public int getInstanceId() {

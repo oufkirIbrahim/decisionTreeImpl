@@ -2,6 +2,7 @@ package com.fsoteam.ml.decisiontreeimpl.ui;
 
 import com.fsoteam.ml.decisiontreeimpl.decisionTree.Node;
 import com.fsoteam.ml.decisiontreeimpl.decisionTree.DecisionTree;
+import com.fsoteam.ml.decisiontreeimpl.decisionTree.RandomForest;
 import com.fsoteam.ml.decisiontreeimpl.utils.TrainedModelObserver;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -34,7 +35,12 @@ public class ViewDataController implements TrainedModelObserver {
     }
 
     private void drawTree() {
-        decisionTree = this.sharedData.getTrainedModel();
+
+        if(!this.sharedData.getTrainedModel().getClass().equals(RandomForest.class))
+        {
+            decisionTree = (DecisionTree) this.sharedData.getTrainedModel();
+
+        }
         if (decisionTree != null) {
             Node root = decisionTree.getRoot();
 

@@ -1,9 +1,6 @@
 package com.fsoteam.ml.decisiontreeimpl.evaluation;
 
-import com.fsoteam.ml.decisiontreeimpl.decisionTree.Attribute;
-import com.fsoteam.ml.decisiontreeimpl.decisionTree.Branch;
-import com.fsoteam.ml.decisiontreeimpl.decisionTree.DecisionTree;
-import com.fsoteam.ml.decisiontreeimpl.decisionTree.Node;
+import com.fsoteam.ml.decisiontreeimpl.decisionTree.*;
 import com.fsoteam.ml.decisiontreeimpl.model.*;
 import com.fsoteam.ml.decisiontreeimpl.utils.CustomFileReader;
 
@@ -19,7 +16,7 @@ public class MainTest {
     public static void main(String[] args) throws IOException {
 
         //String fileName = "weather.nominal.arff";
-        String fileName = "contact-lenses.arff";
+        String fileName = "weather.nominal.arff";
 
         Scanner clavier = new Scanner(System.in);
         List<Instance> datasets = new ArrayList<>();
@@ -46,7 +43,7 @@ public class MainTest {
         System.out.println("\nsize of dataSet : " + datasets.size() + "\nsize of attributes : " + attributes.size() + "\n");
         DataSet corpus = new DataSet(datasets);
 
-        arbre = new DecisionTree(racine, classes);
+        arbre = new Id3DecisionTreeImpl(racine, classes, attributes);
 
         while (true) {
             System.out.println("Saisir votre choix");
@@ -58,7 +55,7 @@ public class MainTest {
             switch (choix) {
                 case 1:
                     System.out.println("vous avez choisir le premier choix ");
-                    arbre.id3(attributes, datasets);
+                    arbre.train(datasets);
                     ConfusionMatrix M = new ConfusionMatrix(arbre.generateConfusionMatrix(datasets),nombreClasse);
                     for (int[] tabi : M.getMatrix()) {
                         for (int index : tabi) {
@@ -66,7 +63,7 @@ public class MainTest {
                         }
                         System.out.println();
                     }
-                    arbre.displayTree(racine, "");
+                    arbre.displayTreeString( arbre.getRoot(), "   ");
                     break;
                 case 2:
                     System.out.println("vous avez choisir le deuxième choix ");
@@ -79,7 +76,7 @@ public class MainTest {
                     List<Instance> test = divise.getTest();
                     System.out.println("Size of Train : " + train.size());
                     System.out.println("Size of Test : " + test.size());
-                    arbre.id3(attributes, train);
+                    arbre.train(train);
                     ConfusionMatrix M1 = new ConfusionMatrix(arbre.generateConfusionMatrix(test),nombreClasse);
                     for (int[] tabi : M1.getMatrix()) {
                         for (int index : tabi) {
@@ -87,7 +84,7 @@ public class MainTest {
                         }
                         System.out.println();
                     }
-                    arbre.displayTree(racine, "");
+                    arbre.displayTreeString( arbre.getRoot(), "   ");
                     break;
                 case 3:
                     System.out.println("vous avez choisir le troisième choix ");
@@ -103,7 +100,7 @@ public class MainTest {
                         System.out.println("Size of Train : " + trainCross.size());
                         System.out.println("Size of Test : " + testCross.size());
                         n++;
-                        arbre.id3(attributes, trainCross);
+                        arbre.train(trainCross);
                         ConfusionMatrix M2 = new ConfusionMatrix(arbre.generateConfusionMatrix(testCross),nombreClasse);
                         MatricesConf.add(M2);
                         /*for (int[] tabi : M2.elements) {
@@ -112,7 +109,7 @@ public class MainTest {
                             }
                             System.out.println();
                         }*/
-                        arbre.displayTree(racine, "");
+                        arbre.displayTreeString( arbre.getRoot(), "   ");
                     }
 
                     int[][] matrice = new int[nombreClasse][nombreClasse];
@@ -138,8 +135,7 @@ public class MainTest {
                     System.out.println("Exemple d'ensemble des données pour contact-lenses:'young,myope,yes,normal'classe=>hard");
 
                     String Ensoleille, Temperature, Humidite, Vent;
-                    Node root = new Node();
-                    arbre.id3(attributes, datasets);
+                    arbre.train(datasets);
                     System.out.println("----->1:saisir le premier attribut "+attributes.get(0).getAttributeName());
                     clavier.nextLine();
                     Ensoleille = clavier.nextLine();
@@ -155,7 +151,7 @@ public class MainTest {
                     attList.add(Humidite);
                     attList.add(Vent);
                     Instance instance = new Instance(99, attList);
-                    System.out.println(arbre.evaluateInstance(instance));
+                    System.out.println(arbre.evaluate(instance));
                     break;
                 default:
                     throw new AssertionError();
