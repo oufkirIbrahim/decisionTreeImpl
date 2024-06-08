@@ -1,6 +1,6 @@
 package com.fsoteam.ml.decisiontreeimpl.model;
 
-public class DecisionTreeClass {
+public class DecisionTreeClass implements Cloneable {
     private int classId;
     private String className;
     private int appearanceCount;
@@ -35,7 +35,21 @@ public class DecisionTreeClass {
         this.appearanceCount = appearanceCount;
     }
 
+    public void incrementAppearanceCount() {
+        this.appearanceCount++;
+    }
+
     public void  resetCount() {
         this.appearanceCount = 0;
+    }
+
+    @Override
+    public DecisionTreeClass clone() {
+        try {
+            // TODO: copy mutable state here, so the clone can't change the internals of the original
+            return (DecisionTreeClass) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

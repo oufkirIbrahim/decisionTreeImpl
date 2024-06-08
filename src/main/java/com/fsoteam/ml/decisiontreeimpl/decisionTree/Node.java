@@ -2,6 +2,9 @@ package com.fsoteam.ml.decisiontreeimpl.decisionTree;
 
 import com.fsoteam.ml.decisiontreeimpl.decisionTree.Attribute;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Node implements Cloneable{
 
     private Attribute attribute;
@@ -41,9 +44,23 @@ public class Node implements Cloneable{
 
     @Override
     public Node clone() {
+        return clone(new HashMap<>());
+    }
+
+    public Node clone(Map<Object, Object> clonesMap) {
+        if (clonesMap.containsKey(this)) {
+            return (Node) clonesMap.get(this);
+        }
+
         try {
-            // TODO: copy mutable state here, so the clone can't change the internals of the original
-            return (Node) super.clone();
+            Node cloned = (Node) super.clone();
+            clonesMap.put(this, cloned);
+
+            if (this.attribute != null) {
+                cloned.attribute = this.attribute.clone(clonesMap);
+            }
+
+            return cloned;
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }

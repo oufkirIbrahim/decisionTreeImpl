@@ -2,24 +2,30 @@ package com.fsoteam.ml.decisiontreeimpl.decisionTree;
 
 import com.fsoteam.ml.decisiontreeimpl.model.DecisionTreeClass;
 import com.fsoteam.ml.decisiontreeimpl.model.Instance;
+import com.fsoteam.ml.decisiontreeimpl.utils.LearningModel;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-public class DecisionTree implements Cloneable{
+public abstract class DecisionTree implements Cloneable, LearningModel {
 
     private Node root;
     private List<DecisionTreeClass> classes;
     private StringBuilder text;
+    private List <Attribute> attributes;
 
     public DecisionTree() {
         this.root = new Node();
         this.classes = new ArrayList<DecisionTreeClass>();
+        this.attributes = new ArrayList<Attribute>();
         this.text = new StringBuilder();
     }
 
-    public DecisionTree(Node root, List<DecisionTreeClass> classes) {
+    public DecisionTree(Node root, List<DecisionTreeClass> classes, List<Attribute> attributes) {
+        super();
         this.root = root;
         this.classes = classes;
+        this.attributes = attributes;
         this.text = new StringBuilder();
     }
 
@@ -43,7 +49,7 @@ public class DecisionTree implements Cloneable{
                                 b.setInstanceIds(addInstanceId(b.getInstanceIds(), in.getInstanceId()));
                                 b.setTotalInstanceCount(b.getTotalInstanceCount() + 1);
                                 int tempidclass = cla.getClassId();
-                                int tempnbApparicientClasse[] = b.getInstanceCountsInClasses();
+                                int[] tempnbApparicientClasse = b.getInstanceCountsInClasses();
                                 tempnbApparicientClasse[tempidclass - 1] = tempnbApparicientClasse[tempidclass - 1] + 1;
                                 b.setInstanceCountsInClasses(tempnbApparicientClasse);
                             }
@@ -120,78 +126,23 @@ public class DecisionTree implements Cloneable{
     }
 
     public String calculateMajorityClass(List<Instance> instancesReste) {
-        for (DecisionTreeClass cla : classes) {
-            cla.setAppearanceCount(0);
-        }
+        classes.forEach(cla -> cla.setAppearanceCount(0));
 
-        for (Instance in : instancesReste) {
-            for (DecisionTreeClass cla : classes) {
-                if (in.getClassLabel().equals(cla.getClassName())) {
-                    cla.setAppearanceCount(cla.getAppearanceCount() + 1);
-                }
-            }
-        }
+        instancesReste.forEach(in -> classes.stream()
+                .filter(cla -> in.getClassLabel().equals(cla.getClassName()))
+                .forEach(cla -> cla.setAppearanceCount(cla.getAppearanceCount() + 1)));
 
-        int max = classes.get(0).getAppearanceCount();
-        String classMax = classes.get(0).getClassName();
-        for (DecisionTreeClass cla : classes) {
-            if (cla.getAppearanceCount() > max) {
-                max = cla.getAppearanceCount();
-                classMax = cla.getClassName();
-            }
-        }
-
-        return classMax;
+        return classes.stream()
+                .max(Comparator.comparing(DecisionTreeClass::getAppearanceCount))
+                .map(DecisionTreeClass::getClassName)
+                .orElse(null);
     }
 
-    public void id3(List<Attribute> attributes, List<Instance> instances){
 
-        buildTree(root, attributes, instances);
-    }
-    private  void buildTree(Node currentNode, List<Attribute> attributesRestants, List<Instance> instancesRestantes) {
-        calculateNp(instancesRestantes, attributesRestants);
 
-        double maxGain = 0;
-        Attribute meilleurAttribute = null;
 
-        for (Attribute a : attributesRestants) {
-            double gain = calculateGain(a);
-            if (gain > maxGain) {
-                maxGain = gain;
-                meilleurAttribute = a;
-            }
-        }
-
-        if (meilleurAttribute == null) {
-            currentNode.setLeaf(true);
-            currentNode.setMajorClass(calculateMajorityClass(instancesRestantes));
-            return;
-        }
-
-        Attribute attributeCopie = meilleurAttribute.clone();
-        currentNode.setAttribute(attributeCopie);
-
-        for (Branch branche : attributeCopie.getBranches()) {
-            List<Instance> instancesPartitionnees = new ArrayList<>();
-            List<Attribute> attributesRestantsFils = new ArrayList<>(attributesRestants);
-            attributesRestantsFils.remove(attributeCopie);
-
-            for (Instance instance : instancesRestantes) {
-                for (int idInstanceBranche : branche.getInstanceIds()) {
-                    if (idInstanceBranche == instance.getInstanceId()) {
-                        instancesPartitionnees.add(instance);
-                    }
-                }
-            }
-
-            Node noeudFils = new Node();
-            branche.setChildNode(noeudFils);
-
-            buildTree(noeudFils, attributesRestantsFils, instancesPartitionnees);
-        }
-    }
-
-    public String evaluateInstance(Instance instance) {
+    @Override
+    public String evaluate(Instance instance) {
         Node currentNode = root.clone();
 
         while (!currentNode.isLeaf()) {
@@ -215,30 +166,33 @@ public class DecisionTree implements Cloneable{
         return currentNode.getMajorClass();
     }
 
+    @Override
     public int[][] generateConfusionMatrix(List<Instance> dataTest) {
         int[][] matrix = new int[classes.size()][classes.size()];
 
-        for (Instance i : dataTest) {
+        dataTest.forEach(i -> {
             String classReel = i.getClassLabel();
-            String classPred = evaluateInstance(i);
-            int indiceClassReel = 0;
-            int indiceClassPred = 0;
+            String classPred = evaluate(i);
 
-            for (DecisionTreeClass arb : classes) {
-                if (classReel.equals(arb.getClassName())) {
-                    indiceClassReel = arb.getClassId() - 1;
-                }
-                if (classPred.equals(arb.getClassName())) {
-                    indiceClassPred = arb.getClassId() - 1;
-                }
-            }
+            int indiceClassReel = classes.stream()
+                    .filter(arb -> classReel.equals(arb.getClassName()))
+                    .mapToInt(DecisionTreeClass::getClassId)
+                    .findFirst()
+                    .orElse(0) - 1;
+
+            int indiceClassPred = classes.stream()
+                    .filter(arb -> classPred.equals(arb.getClassName()))
+                    .mapToInt(DecisionTreeClass::getClassId)
+                    .findFirst()
+                    .orElse(0) - 1;
 
             if (classPred.equals(classReel)) {
                 matrix[indiceClassReel][indiceClassReel]++;
             } else {
                 matrix[indiceClassReel][indiceClassPred]++;
             }
-        }
+        });
+
         return matrix;
     }
 
@@ -274,6 +228,14 @@ public class DecisionTree implements Cloneable{
         return root;
     }
 
+    public List<DecisionTreeClass> getClasses() {
+        return classes;
+    }
+
+    public List<Attribute> getAttributes() {
+        return attributes;
+    }
+
     @Override
     public DecisionTree clone() {
         try {
@@ -282,5 +244,9 @@ public class DecisionTree implements Cloneable{
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
+    }
+    @Override
+    public LearningModel cloneModel() {
+        return this.clone();
     }
 }

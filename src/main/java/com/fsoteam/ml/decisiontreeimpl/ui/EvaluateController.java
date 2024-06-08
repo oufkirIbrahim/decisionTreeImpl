@@ -106,7 +106,7 @@ public class EvaluateController implements TrainedModelObserver {
 
         Random rand  = new Random();
         Instance instance = new Instance(rand.nextInt(Integer.MAX_VALUE), attributeValues);
-        String result = this.sharedData.getTrainedModel().evaluateInstance(instance);
+        String result = this.sharedData.getTrainedModel().evaluate(instance);
         instance.setClassLabel(result);
         resultTable.getItems().add(instance);
     }

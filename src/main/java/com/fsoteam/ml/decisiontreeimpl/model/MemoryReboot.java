@@ -2,6 +2,7 @@ package com.fsoteam.ml.decisiontreeimpl.model;
 
 import com.fsoteam.ml.decisiontreeimpl.decisionTree.DecisionTree;
 import com.fsoteam.ml.decisiontreeimpl.ui.SharedData;
+import com.fsoteam.ml.decisiontreeimpl.utils.LearningModel;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ public class MemoryReboot {
     private String memoryName;
     private List<Instance> trainingData;
     private List<Instance> testingData;
-    private DecisionTree trainedModel;
+    private LearningModel trainedModel;
     private String memoryOutput;
 
     public MemoryReboot() {
@@ -17,7 +18,7 @@ public class MemoryReboot {
 
         this.trainingData = sharedData.getTrainingData();
         this.testingData = sharedData.getTestingData();
-        this.trainedModel = sharedData.getTrainedModel().clone();
+        this.trainedModel = sharedData.getTrainedModel().cloneModel();
         this.memoryOutput = "";
         this.memoryName = "";
     }
@@ -44,11 +45,11 @@ public class MemoryReboot {
         this.testingData = testingData;
     }
 
-    public DecisionTree getTrainedModel() {
+    public LearningModel getTrainedModel() {
         return trainedModel;
     }
 
-    public void setTrainedModel(DecisionTree trainedModel) {
+    public void setTrainedModel(LearningModel trainedModel) {
         this.trainedModel = trainedModel;
     }
 

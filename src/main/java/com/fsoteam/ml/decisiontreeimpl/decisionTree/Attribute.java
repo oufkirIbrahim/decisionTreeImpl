@@ -2,7 +2,10 @@ package com.fsoteam.ml.decisiontreeimpl.decisionTree;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * This class represents an attribute in the decision tree.
@@ -17,7 +20,12 @@ public class Attribute implements Cloneable {
         this.attributeName = attributeName;
         this.branches = new ArrayList<>(branches);
     }
-
+    public Attribute(Attribute other) {
+        this.attributeName = other.attributeName;
+        this.branches = other.branches.stream()
+                .map(Branch::clone)
+                .collect(Collectors.toList());
+    }
     public String getAttributeName() {
         return attributeName;
     }
@@ -30,15 +38,31 @@ public class Attribute implements Cloneable {
         this.branches = branches;
     }
 
+
+
     @Override
     public Attribute clone() {
+        return clone(new HashMap<>());
+    }
+
+    public Attribute clone(Map<Object, Object> clonesMap) {
+        if (clonesMap.containsKey(this)) {
+            return (Attribute) clonesMap.get(this);
+        }
+
         try {
             Attribute cloned = (Attribute) super.clone();
-            cloned.setBranches(new ArrayList<>(this.branches));
+            clonesMap.put(this, cloned);
+
+            List<Branch> clonedBranches = new ArrayList<>();
+            for (Branch branch : this.branches) {
+                clonedBranches.add(branch.clone(clonesMap));
+            }
+            cloned.setBranches(clonedBranches);
+
             return cloned;
         } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-            return null;
+            throw new AssertionError();
         }
     }
 }
