@@ -11,7 +11,7 @@ public class MainTest {
     protected static List<DecisionTreeClass> decisionTreeClasses = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
-        String fileName = "weather.nominal.arff";
+        String fileName = "samples/weather.nominal.arff";
 
         Scanner scanner = new Scanner(System.in);
         List<Instance> datasets = new ArrayList<>();
