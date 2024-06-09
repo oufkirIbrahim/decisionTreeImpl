@@ -36,7 +36,7 @@ This project implements a decision tree classifier for string data. The decision
 ## Installation
 1. Clone this repository to your local machine:
    ```bash
-   git clone <repository_url>
+   git clone https://github.com/oufkirIbrahim/decisionTreeImpl.git
 2. Import the project into your preferred Java IDE.
 
 3. Set up the necessary dependencies including JavaFX and Weka libraries.
