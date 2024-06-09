@@ -6,6 +6,8 @@ import java.util.Random;
 
 public class DataSet {
 
+
+
     private List<Instance> dataSet;
 
     public DataSet() {
@@ -41,5 +43,8 @@ public class DataSet {
             divises.add(divise);
         }
         return divises;
+    }
+    public List<Instance> getDataSet() {
+        return dataSet;
     }
 }
