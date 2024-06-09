@@ -30,7 +30,8 @@
                                        <ToggleGroup fx:id="classificationModel" />
                                     </toggleGroup>
                                  </RadioButton>
-                                 <RadioButton id="classificationModel_J48" fx:id="classificationModel_J48" mnemonicParsing="false" prefHeight="18.0" prefWidth="279.0" text="J48" toggleGroup="$classificationModel" />
+                                 <RadioButton id="classificationModel_CART" fx:id="classificationModel_CART"
+                                              mnemonicParsing="false" prefHeight="18.0" prefWidth="279.0" text="CART" toggleGroup="$classificationModel" />
                                  <RadioButton id="classificationModel_RandomForest" fx:id="classificationModel_RandomForest" contentDisplay="RIGHT" mnemonicParsing="false" prefHeight="18.0" prefWidth="279.0" text="Random Forest" toggleGroup="$classificationModel">
                                     <graphic>
                                        <TextField fx:id="numberOfTrees" alignment="CENTER_RIGHT" prefHeight="26.0" prefWidth="43.0" promptText="Trees" translateX="30.0" />

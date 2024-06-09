@@ -29,7 +29,7 @@ public class RunTestController {
     @FXML
     private Button stopTestButton;
     @FXML
-    private RadioButton testOptions_trainingSet, testOptions_crossValidation, testOptions_percentageSplit, classificationModel_Id3, classificationModel_J48, classificationModel_RandomForest;
+    private RadioButton testOptions_trainingSet, testOptions_crossValidation, testOptions_percentageSplit, classificationModel_Id3, classificationModel_CART, classificationModel_RandomForest;
     @FXML
     private TextField crossValidationFoldEt, percentageSplitEt, numberOfTrees;
     @FXML
@@ -129,7 +129,7 @@ public class RunTestController {
             // Option 2: Select K (Folds) from train set to test them
             int folds = Integer.parseInt(crossValidationFoldEt.getText());
             testMode = "Using Cross-Validation " + folds + " folds";
-            trainTest = divideIntoKFolds(this.sharedData.getDatasetInitializer().getInstanceData(), folds);
+            trainTest =  divideIntoKFolds(this.sharedData.getDatasetInitializer().getInstanceData(), folds);
         } else if (testOptions_percentageSplit.isSelected()) {
             // Option 3: Use percentage to divide the train set into train + test set
             double percentage = Double.parseDouble(percentageSplitEt.getText());
@@ -151,9 +151,9 @@ public class RunTestController {
         if(classificationModel_Id3.isSelected()) {
             this.sharedData.setLearningAlgorithm("ID3");
             this.sharedData.setTrainedModel(trainModelById3(this.sharedData.getTrainingData()));
-        } else if(classificationModel_J48.isSelected()) {
-            this.sharedData.setLearningAlgorithm("J48");
-            this.sharedData.setTrainedModel(trainModelByJ48(this.sharedData.getTrainingData()));
+        } else if(classificationModel_CART.isSelected()) {
+            this.sharedData.setLearningAlgorithm("CART");
+            this.sharedData.setTrainedModel(trainModelByCART(this.sharedData.getTrainingData()));
         } else if(classificationModel_RandomForest.isSelected()) {
             this.sharedData.setLearningAlgorithm("RandomForest");
             this.sharedData.setTrainedModel(trainModelByRandomForest(this.sharedData.getTrainingData()));
@@ -276,9 +276,9 @@ public class RunTestController {
         return model;
     }
 
-    private DecisionTree trainModelByJ48(List<Instance> trainData) {
+    private DecisionTree trainModelByCART(List<Instance> trainData) {
         // Train the model using the trainData
-        DecisionTree model = new J48DecisionTreeImpl(new Node(), this.sharedData.getDatasetInitializer().getDecisionTreeClasses(), this.sharedData.getDatasetInitializer().getAttributes());
+        DecisionTree model = new CartDecisionTreeImpl(new Node(), this.sharedData.getDatasetInitializer().getDecisionTreeClasses(), this.sharedData.getDatasetInitializer().getAttributes());
         model.train( trainData);
         return model;
     }
