@@ -7,155 +7,161 @@ import com.fsoteam.ml.decisiontreeimpl.utils.CustomFileReader;
 import java.io.*;
 import java.util.*;
 
-
-
-
 public class MainTest {
-    protected static List<DecisionTreeClass> classes=new ArrayList<>();
+    protected static List<DecisionTreeClass> decisionTreeClasses = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
-
-        //String fileName = "weather.nominal.arff";
         String fileName = "weather.nominal.arff";
 
-        Scanner clavier = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
         List<Instance> datasets = new ArrayList<>();
         List<Attribute> attributes = new ArrayList<>();
-        CustomFileReader fichier = new CustomFileReader(fileName);
-        DecisionTree arbre ;
-        Node racine = new Node();
-        datasets = fichier.getDataSet();
-        attributes = fichier.getAttributs();
+        CustomFileReader fileReader = new CustomFileReader(fileName);
+        DecisionTree decisionTree;
+        Node rootNode = new Node();
 
+        datasets = fileReader.getDataSet();
+        attributes = fileReader.getAttributs();
 
-        int i=1;
-        for(Branch b:attributes.get(attributes.size() - 1).getBranches()){
-            classes.add( new DecisionTreeClass(i,b.getValue(),0));
-            i++;
+        // Initialize decision tree classes based on the last attribute's branches
+        int classIndex = 1;
+        for (Branch branch : attributes.get(attributes.size() - 1).getBranches()) {
+            decisionTreeClasses.add(new DecisionTreeClass(classIndex, branch.getValue(), 0));
+            classIndex++;
         }
-        int nombreClasse =classes.size();
-
+        int numberOfClasses = decisionTreeClasses.size();
 
         attributes.remove(attributes.size() - 1);
-        System.out.println(datasets.size() + "\n");
-        System.out.println(attributes.size() + "\n");
-        System.out.println(classes.size() + "\n");
-        System.out.println("\nsize of dataSet : " + datasets.size() + "\nsize of attributes : " + attributes.size() + "\n");
+        System.out.println("Dataset size: " + datasets.size());
+        System.out.println("Attributes size: " + attributes.size());
+        System.out.println("Classes size: " + decisionTreeClasses.size());
         DataSet corpus = new DataSet(datasets);
 
-        arbre = new Id3DecisionTreeImpl(racine, classes, attributes);
+        decisionTree = new Id3DecisionTreeImpl(rootNode, decisionTreeClasses, attributes);
 
         while (true) {
-            System.out.println("Saisir votre choix");
-            System.out.println("1 -Pour Utiliser le datasets d'entraînement pour le test");
-            System.out.println("2 -Pour Utiliser diviser une partie pour l'entraînement et une partie pour le test");
-            System.out.println("3 -Pour Utiliser le Validation croisée  pour le test");
-            System.out.println("4 -Pour Entrer les valeurs des attributes d'une instance est connu la prédiction");
-            int choix = clavier.nextInt();
-            switch (choix) {
+            displayMenu();
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline left by nextInt()
+            switch (choice) {
                 case 1:
-                    System.out.println("vous avez choisir le premier choix ");
-                    arbre.train(datasets);
-                    ConfusionMatrix M = new ConfusionMatrix(arbre.generateConfusionMatrix(datasets),nombreClasse);
-                    for (int[] tabi : M.getMatrix()) {
-                        for (int index : tabi) {
-                            System.out.print(index + " ");
-                        }
-                        System.out.println();
-                    }
-                    arbre.displayTreeString( arbre.getRoot(), "   ");
+                    useTrainingDatasetForTesting(decisionTree, datasets, numberOfClasses);
                     break;
                 case 2:
-                    System.out.println("vous avez choisir le deuxième choix ");
-                    System.out.println("Entrer le pourcentage du test 'entier entre 1-99' ");
-                    int Pourc = clavier.nextInt();
-                    double k = (double) Pourc * datasets.size() / 100;
-                    System.out.println("k = " + k);
-                    TrainTest divise = corpus.trainTest(k);
-                    List<Instance> train = divise.getTrain();
-                    List<Instance> test = divise.getTest();
-                    System.out.println("Size of Train : " + train.size());
-                    System.out.println("Size of Test : " + test.size());
-                    arbre.train(train);
-                    ConfusionMatrix M1 = new ConfusionMatrix(arbre.generateConfusionMatrix(test),nombreClasse);
-                    for (int[] tabi : M1.getMatrix()) {
-                        for (int index : tabi) {
-                            System.out.print(index + " ");
-                        }
-                        System.out.println();
-                    }
-                    arbre.displayTreeString( arbre.getRoot(), "   ");
+                    splitDataForTrainingAndTesting(scanner, corpus, decisionTree, numberOfClasses);
                     break;
                 case 3:
-                    System.out.println("vous avez choisir le troisième choix ");
-                    System.out.println("Vous voulez diviser le corpus d'apprentissage à combien");
-                    int Q = clavier.nextInt();
-                    List<TrainTest> devises = corpus.crossValidation(Q);
-                    int n = 1;
-                    List<ConfusionMatrix> MatricesConf = new ArrayList<>();
-                    for (TrainTest devise : devises) {
-                        System.out.println("corpus " + n + "\n------------------------------------");
-                        List<Instance> trainCross = devise.getTrain();
-                        List<Instance> testCross = devise.getTest();
-                        System.out.println("Size of Train : " + trainCross.size());
-                        System.out.println("Size of Test : " + testCross.size());
-                        n++;
-                        arbre.train(trainCross);
-                        ConfusionMatrix M2 = new ConfusionMatrix(arbre.generateConfusionMatrix(testCross),nombreClasse);
-                        MatricesConf.add(M2);
-                        /*for (int[] tabi : M2.elements) {
-                            for (int index : tabi) {
-                                System.out.print(index + " ");
-                            }
-                            System.out.println();
-                        }*/
-                        arbre.displayTreeString( arbre.getRoot(), "   ");
-                    }
-
-                    int[][] matrice = new int[nombreClasse][nombreClasse];
-                    for (ConfusionMatrix Matrice : MatricesConf) {
-                        for (int g = 0; g < nombreClasse; g++) {
-                            for (int h = 0; h < nombreClasse; h++) {
-                                matrice[g][h] += Matrice.getMatrix()[g][h];
-                            }
-                        }
-                    }
-
-                    ConfusionMatrix MatriceFinal = new ConfusionMatrix(matrice,nombreClasse);
-                    for (int[] tabi : MatriceFinal.getMatrix()) {
-                        for (int indexo : tabi) {
-                            System.out.print(indexo + " ");
-                        }
-                        System.out.println();
-                    }
+                    crossValidationTesting(scanner, corpus, decisionTree, numberOfClasses);
                     break;
                 case 4:
-                    System.out.println("vous avez choisir le quatrième choix ");
-                    System.out.println("Exemple d'ensemble des données pour weather nominal:sunny,cool,normal,FALSE");
-                    System.out.println("Exemple d'ensemble des données pour contact-lenses:'young,myope,yes,normal'classe=>hard");
-
-                    String Ensoleille, Temperature, Humidite, Vent;
-                    arbre.train(datasets);
-                    System.out.println("----->1:saisir le premier attribut "+attributes.get(0).getAttributeName());
-                    clavier.nextLine();
-                    Ensoleille = clavier.nextLine();
-                    System.out.println("----->2:saisir la deuxième attribut "+attributes.get(1).getAttributeName());
-                    Temperature = clavier.nextLine();
-                    System.out.println("----->3:saisir la troisième attribut "+attributes.get(2).getAttributeName());
-                    Humidite = clavier.nextLine();
-                    System.out.println("----->4:saisir la quatrième attribut "+attributes.get(3).getAttributeName());
-                    Vent = clavier.nextLine();
-                    List<String> attList = new ArrayList<>();
-                    attList.add(Ensoleille);
-                    attList.add(Temperature);
-                    attList.add(Humidite);
-                    attList.add(Vent);
-                    Instance instance = new Instance(99, attList);
-                    System.out.println(arbre.evaluate(instance));
+                    predictInstanceAttributes(scanner, decisionTree, attributes, datasets);
                     break;
+                case 5:
+                    System.out.println("Exiting the program...");
+                    System.exit(0);
                 default:
-                    throw new AssertionError();
+                    System.out.println("Invalid choice. Please try again.");
             }
         }
+    }
+
+    private static void displayMenu() {
+        System.out.println("\n==============================");
+        System.out.println("       Decision Tree Menu      ");
+        System.out.println("==============================");
+        System.out.println("1 - Use the training dataset for testing");
+        System.out.println("2 - Split a part for training and a part for testing");
+        System.out.println("3 - Use cross-validation for testing");
+        System.out.println("4 - Enter the attribute values of an instance to predict its class");
+        System.out.println("5 - Exit");
+        System.out.print("Enter your choice: ");
+    }
+
+    private static void useTrainingDatasetForTesting(DecisionTree decisionTree, List<Instance> datasets, int numberOfClasses) {
+        System.out.println("You chose to use the training dataset for testing");
+        decisionTree.train(datasets);
+        displayConfusionMatrix(decisionTree.generateConfusionMatrix(datasets), numberOfClasses);
+        decisionTree.displayTreeString(decisionTree.getRoot(), "   ");
+    }
+
+    private static void splitDataForTrainingAndTesting(Scanner scanner, DataSet corpus, DecisionTree decisionTree, int numberOfClasses) {
+        System.out.println("You chose to split the data for training and testing");
+        System.out.print("Enter the percentage for testing (integer between 1-99): ");
+        int percentage = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline left by nextInt()
+        double k = (double) percentage * corpus.getDataSet().size() / 100;
+        TrainTest splitData = corpus.trainTest(k);
+        List<Instance> trainData = splitData.getTrain();
+        List<Instance> testData = splitData.getTest();
+        System.out.println("Training set size: " + trainData.size());
+        System.out.println("Testing set size: " + testData.size());
+        decisionTree.train(trainData);
+        displayConfusionMatrix(decisionTree.generateConfusionMatrix(testData), numberOfClasses);
+        decisionTree.displayTreeString(decisionTree.getRoot(), "   ");
+    }
+
+    private static void crossValidationTesting(Scanner scanner, DataSet corpus, DecisionTree decisionTree, int numberOfClasses) {
+        System.out.println("You chose to use cross-validation for testing");
+        System.out.print("Enter the number of folds for cross-validation: ");
+        int numberOfFolds = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline left by nextInt()
+        if(numberOfFolds <= 1 || numberOfFolds > corpus.getDataSet().size()) {
+            System.out.println("Invalid number of folds. Please try again.");
+            return;
+        }
+        List<TrainTest> crossValidationSets = corpus.crossValidation(numberOfFolds);
+        int foldNumber = 1;
+        List<ConfusionMatrix> confusionMatrices = new ArrayList<>();
+        for (TrainTest fold : crossValidationSets) {
+            System.out.println("Fold " + foldNumber + "\n------------------------------------");
+            List<Instance> trainFold = fold.getTrain();
+            List<Instance> testFold = fold.getTest();
+            System.out.println("Training set size: " + trainFold.size());
+            System.out.println("Testing set size: " + testFold.size());
+            foldNumber++;
+            decisionTree.train(trainFold);
+            confusionMatrices.add(new ConfusionMatrix(decisionTree.generateConfusionMatrix(testFold), numberOfClasses));
+            decisionTree.displayTreeString(decisionTree.getRoot(), "   ");
+        }
+        displayAggregatedConfusionMatrix(confusionMatrices, numberOfClasses);
+    }
+
+    private static void predictInstanceAttributes(Scanner scanner, DecisionTree decisionTree, List<Attribute> attributes, List<Instance> datasets) {
+        System.out.println("You chose to predict the class of an instance based on attribute values");
+        System.out.println("Example data for weather nominal: sunny, cool, normal, FALSE");
+        System.out.println("Example data for contact-lenses: young, myope, yes, normal");
+
+        decisionTree.train(datasets);
+        List<String> attributeValues = new ArrayList<>();
+        for (int i = 0; i < attributes.size(); i++) {
+            System.out.print("Enter the value for " + attributes.get(i).getAttributeName() + ": ");
+            attributeValues.add(scanner.nextLine());
+        }
+        Instance instance = new Instance(99, attributeValues);
+        System.out.println("Predicted class: " + decisionTree.evaluate(instance));
+    }
+
+    private static void displayConfusionMatrix(int[][] matrix, int numberOfClasses) {
+        System.out.println("\nConfusion Matrix:");
+        System.out.println("=================");
+        for (int[] row : matrix) {
+            for (int value : row) {
+                System.out.print(value + "\t");
+            }
+            System.out.println();
+        }
+    }
+
+    private static void displayAggregatedConfusionMatrix(List<ConfusionMatrix> confusionMatrices, int numberOfClasses) {
+        int[][] aggregatedMatrix = new int[numberOfClasses][numberOfClasses];
+        for (ConfusionMatrix cm : confusionMatrices) {
+            int[][] matrix = cm.getMatrix();
+            for (int i = 0; i < numberOfClasses; i++) {
+                for (int j = 0; j < numberOfClasses; j++) {
+                    aggregatedMatrix[i][j] += matrix[i][j];
+                }
+            }
+        }
+        displayConfusionMatrix(aggregatedMatrix, numberOfClasses);
     }
 }
