@@ -7,8 +7,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class J48DecisionTreeImpl extends DecisionTree {
 
+/**
+ *  This Class has not been implemented yet. Once it is implemented correctly it will be added to the Run Test Interface
+ *  It is a placeholder for the J48 Decision Tree algorithm.
+ *  The J48 Decision Tree algorithm is a popular decision tree algorithm that is used in data mining and machine learning.
+ * */
+public class J48DecisionTreeImpl extends DecisionTree {
 
     public J48DecisionTreeImpl() {
         super();
@@ -19,49 +24,47 @@ public class J48DecisionTreeImpl extends DecisionTree {
     }
 
     @Override
-    public void train(List<Instance> instances){
+    public void train(List<Instance> instances) {
         buildTreeJ48(super.getRoot(), super.getAttributes(), instances);
     }
 
-    private void buildTreeJ48(Node currentNode, List<Attribute> attributesRestants, List<Instance> instancesRestantes) {
-        calculateNp(instancesRestantes, attributesRestants);
+    private void buildTreeJ48(Node currentNode, List<Attribute> remainingAttributes, List<Instance> remainingInstances) {
+        calculateNp(remainingInstances, remainingAttributes);
 
         double maxGainRatio = 0;
-        Attribute meilleurAttribute = null;
+        Attribute bestAttribute = null;
 
-        for (Attribute a : attributesRestants) {
+        for (Attribute a : remainingAttributes) {
             double gainRatio = calculateGainRatio(a);
             if (gainRatio > maxGainRatio) {
                 maxGainRatio = gainRatio;
-                meilleurAttribute = a;
+                bestAttribute = a;
             }
         }
 
-        if (meilleurAttribute == null) {
+        if (bestAttribute == null) {
             currentNode.setLeaf(true);
-            currentNode.setMajorClass(calculateMajorityClass(instancesRestantes));
+            currentNode.setMajorClass(calculateMajorityClass(remainingInstances));
             return;
         }
 
-        Attribute attributeCopie = meilleurAttribute.clone();
-        currentNode.setAttribute(attributeCopie);
+        Attribute attributeCopy = bestAttribute.clone();
+        currentNode.setAttribute(attributeCopy);
 
-        attributeCopie.getBranches().forEach(branche -> {
-            List<Instance> instancesPartitionnees = instancesRestantes.stream()
-                    .filter(instance -> Arrays.stream(branche.getInstanceIds())
-                            .anyMatch(idInstanceBranche -> idInstanceBranche == instance.getInstanceId()))
-                    .map(Instance::new) // Create a new Instance object
+        attributeCopy.getBranches().forEach(branch -> {
+            List<Instance> partitionedInstances = remainingInstances.stream()
+                    .filter(instance -> Arrays.stream(branch.getInstanceIds())
+                            .anyMatch(idInstance -> idInstance == instance.getInstanceId()))
                     .collect(Collectors.toList());
 
-            List<Attribute> attributesRestantsFils = attributesRestants.stream()
-                    .filter(att -> !att.getAttributeName().equals(attributeCopie.getAttributeName()))
-                    .map(Attribute::new) // Create a new Attribute object
+            List<Attribute> remainingAttributesForChild = remainingAttributes.stream()
+                    .filter(att -> !att.getAttributeName().equals(attributeCopy.getAttributeName()))
                     .collect(Collectors.toList());
 
-            Node noeudFils = new Node();
-            branche.setChildNode(noeudFils);
+            Node childNode = new Node();
+            branch.setChildNode(childNode);
 
-            buildTreeJ48(noeudFils, attributesRestantsFils, instancesPartitionnees);
+            buildTreeJ48(childNode, remainingAttributesForChild, partitionedInstances);
         });
     }
 
@@ -72,16 +75,15 @@ public class J48DecisionTreeImpl extends DecisionTree {
     }
 
     private double calculateSplitInformation(Attribute att) {
-        double total = 0;
-        for (DecisionTreeClass arb : super.getClasses()) {
-            total += arb.getAppearanceCount();
-        }
+        double total = super.getClasses().stream()
+                .mapToInt(DecisionTreeClass::getAppearanceCount)
+                .sum();
 
-        double splitInformation = 0;
-        for (Branch b : att.getBranches()) {
-            double ratio = (double) b.getTotalInstanceCount() / (double) (total);
-            splitInformation += -1 * ratio * log2(ratio);
-        }
-        return splitInformation;
+        return att.getBranches().stream()
+                .mapToDouble(branch -> {
+                    double ratio = (double) branch.getTotalInstanceCount() / total;
+                    return -ratio * log2(ratio);
+                })
+                .sum();
     }
 }

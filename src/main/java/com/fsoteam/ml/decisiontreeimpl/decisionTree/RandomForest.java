@@ -7,11 +7,16 @@ import com.fsoteam.ml.decisiontreeimpl.utils.LearningModel;
 import java.util.*;
 import java.util.stream.Collectors;
 
+// Class implementing the Random Forest algorithm
 public class RandomForest implements LearningModel, Cloneable {
+    // List of decision trees in the forest
     private final List<DecisionTree> trees = new ArrayList<>();
+    // List of attributes in the dataset
     private final List<Attribute> attributes;
+    // List of classes in the dataset
     private final List<DecisionTreeClass> classes;
 
+    // Constructor to initialize the random forest with a specified number of trees
     public RandomForest(int numberOfTrees, List<Attribute> attributes, List<DecisionTreeClass> classes) {
         this.attributes = attributes;
         this.classes = classes;
@@ -19,7 +24,7 @@ public class RandomForest implements LearningModel, Cloneable {
         Random random = new Random();
         int numAttributes = (int) Math.sqrt(attributes.size());
         for (int i = 0; i < numberOfTrees; i++) {
-
+            // Select a random subset of attributes for each tree
             Set<Attribute> attributesSubset = new HashSet<>();
             int attempts = 0;
             while (attributesSubset.size() < numAttributes && attempts < 1000) {
@@ -30,23 +35,28 @@ public class RandomForest implements LearningModel, Cloneable {
                 System.out.println("Unable to find unique attributes after 1000 attempts for tree " + (i + 1));
             }
 
+            // Add a new decision tree to the forest
             trees.add(new J48DecisionTreeImpl(new Node(), classes, new ArrayList<>(attributesSubset)));
         }
     }
 
+    // Method to train the random forest with a list of instances
     @Override
     public void train(List<Instance> instances) {
         Random random = new Random();
         for (int i = 0; i < trees.size(); i++) {
+            // Create a bootstrap sample for each tree
             List<Instance> bootstrapSample = new ArrayList<>();
             for (int j = 0; j < instances.size(); j++) {
                 bootstrapSample.add(instances.get(random.nextInt(instances.size())));
             }
             System.out.println("----------- BUILDING TREE-" + (i + 1) + " -----------");
+            // Train each tree with the bootstrap sample
             trees.get(i).train(bootstrapSample);
         }
     }
 
+    // Method to evaluate an instance by getting the majority vote from all trees
     @Override
     public String evaluate(Instance instance) {
         List<String> predictions = trees.stream()
@@ -55,8 +65,7 @@ public class RandomForest implements LearningModel, Cloneable {
         return getMajorityClass(predictions);
     }
 
-
-
+    // Method to generate a confusion matrix for the random forest
     @Override
     public int[][] generateConfusionMatrix(List<Instance> dataTest) {
         int[][] matrix = new int[classes.size()][classes.size()];
@@ -79,6 +88,7 @@ public class RandomForest implements LearningModel, Cloneable {
         return matrix;
     }
 
+    // Helper method to get an attribute by its name
     private Attribute getAttributeByName(String attributeName) {
         return attributes.stream()
                 .filter(attribute -> attribute.getAttributeName().equals(attributeName))
@@ -86,6 +96,7 @@ public class RandomForest implements LearningModel, Cloneable {
                 .orElse(null);
     }
 
+    // Helper method to get the majority class from a list of classes
     private String getMajorityClass(List<String> classes) {
         return classes.stream()
                 .collect(Collectors.groupingBy(e -> e, Collectors.counting()))
@@ -95,6 +106,7 @@ public class RandomForest implements LearningModel, Cloneable {
                 .orElse(null);
     }
 
+    // Method to clone the random forest
     @Override
     public RandomForest clone() {
         try {
@@ -106,6 +118,7 @@ public class RandomForest implements LearningModel, Cloneable {
         }
     }
 
+    // Method to clone the learning model
     @Override
     public LearningModel cloneModel() {
         return this.clone();
